@@ -1,0 +1,30 @@
+{
+  "name": "escrevanaimagem",
+  "version": "1.0.0",
+  "description": "Site onde permite o usuário selecionar uma imagem e escrever algo nela",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test",
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeandroLS/EscrevaNaImagem.git"
+  },
+  "author": "Leandro Lima (https://leandrols.github.io)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeandroLS/EscrevaNaImagem/issues"
+  },
+  "homepage": "https://github.com/LeandroLS/EscrevaNaImagem#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.10"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "pug": "^2.0.3"
+  }
+}
