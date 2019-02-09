@@ -1,5 +1,5 @@
 const app = require('./config/express');
 app.get('/', (req, res) => {
-    res.render('teste');
+    res.render('index');
 });
 app.listen(8000);
