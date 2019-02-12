@@ -25,8 +25,12 @@
     "nodemon": "^1.18.10"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "mime-types": "^2.1.21",
+    "mongodb": "^3.1.13",
+    "multer": "^1.4.1",
     "pug": "^2.0.3"
   }
 }

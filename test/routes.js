@@ -12,3 +12,14 @@ describe("GET '/'", () => {
         });
     })
 });
+
+describe("GET '/upload-images'", () => {
+    it("Deve retornar a página de upload de imagens.", () => {
+        chai.request('http://localhost:8000')
+        .get('/upload-images')
+        .end((err,res) => {
+            // console.log(res);
+            chai.expect(res).to.have.status(200);
+        });
+    })
+});
