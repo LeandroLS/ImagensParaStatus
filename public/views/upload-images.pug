@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-html(lang="en")
+html(lang="pt-br")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         include layouts/default-css-and-js.pug
         title Document
+      
+    body
+        include layouts/header.pug
         .container
             form(action="/images", method="post", enctype="multipart/form-data")
+                label Upload de Imagem
                 .form-group
                     input(type="file", name="image", class="form-control-file")
                 button(type="submit", class="btn btn-primary", value="Upload") Enviar
-    body

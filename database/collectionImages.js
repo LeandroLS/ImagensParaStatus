@@ -14,8 +14,22 @@ function insert(image){
             if(err) throw err;
         });
     });
+    client.close();
+}
+
+async function list(){
+    try {
+        await client.connect();
+        let db = client.db(dbName);
+        let col = db.collection(collection);
+        let result = await col.find({}).toArray();
+        return result;
+    } catch (err) {
+        throw err;
+    }
 }
 
 module.exports = {
-    insert
+    insert,
+    list
 };

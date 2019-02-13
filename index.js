@@ -1,10 +1,15 @@
 const app = require('./config/express');
 const upload = require('./config/upload');
-const image = require('./database/collectionImages');
+const imageDB = require('./database/collectionImages');
 
 app.get('/', (req, res) => {
-    res.render('index', {
-        images : null
+    let images = imageDB.list();
+    images.then((images) => {
+        res.render('index', {
+            images : images
+        });
+    }).catch((err) => {
+        res.render('index');
     });
 });
 
@@ -14,14 +19,12 @@ app.get('/upload-images', (req, res) => {
 
 app.post('/images', upload.single('image'), (req, res) => {
     if(req.file){
-        image.insert({
+        imageDB.insert({
             originalName: req.file.originalname, 
             fileName: req.file.filename
         });
-        res.redirect('upload-images');
-    } else {
-        res.redirect('upload-images');
     }
+    res.redirect(200,'upload-images');
 });
 
 app.listen(8000);
