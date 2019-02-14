@@ -34,8 +34,8 @@ describe("POST /images", () => {
             .post('/images')
             .end((err,res) => {
                 chai.expect(err).to.be.null;
+                chai.expect(res).to.redirectTo('http://localhost:8000/upload-images');
                 chai.expect(res).to.have.status(200);
-                // chai.expect(res).to.redirectTo('http://localhost:8000/upload-images');
                 done();
             });
         });

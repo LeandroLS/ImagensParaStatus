@@ -24,7 +24,7 @@ app.post('/images', upload.single('image'), (req, res) => {
             fileName: req.file.filename
         });
     }
-    res.redirect(200,'upload-images');
+    res.redirect(301,'upload-images');
 });
 
 app.listen(8000);
