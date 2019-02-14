@@ -17,12 +17,12 @@ function insert(image){
     client.close();
 }
 
-async function list(){
+async function list(query = {}){
     try {
         await client.connect();
         let db = client.db(dbName);
         let col = db.collection(collection);
-        let result = await col.find({}).toArray();
+        let result = await col.find(query).toArray();
         return result;
     } catch (err) {
         throw err;

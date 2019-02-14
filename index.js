@@ -17,6 +17,16 @@ app.get('/upload-images', (req, res) => {
     res.render('upload-images');
 });
 
+app.get('/edit-image/:fileName', (req, res) => {
+    let query = { 'fileName' : req.params.fileName };
+    let images = imageDB.list(query);
+    images.then((image) => {
+        res.render('edit-image', { image : image[0] });
+    }).catch((err) => {
+        res.render('edit-image');
+    });
+});
+
 app.post('/images', upload.single('image'), (req, res) => {
     if(req.file){
         imageDB.insert({

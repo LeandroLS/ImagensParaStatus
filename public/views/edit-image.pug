@@ -9,8 +9,7 @@ html(lang="pt-br")
     body
         include layouts/header.pug
         .container
-            form(action="/images", method="post", enctype="multipart/form-data")
-                label Upload de Imagem
-                .form-group
-                    input(type="file", name="image", class="form-control-file")
-                button(type="submit", class="btn btn-primary", value="Upload") Enviar
+            if(image)
+                img(src=`/images/${image.fileName}`)
+            else
+                p.text-warning Nenhuma imagem encontrada

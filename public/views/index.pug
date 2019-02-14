@@ -6,7 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Escreva na Imagem</title>
+    style(type="text/css").
+        a:hover { 
+            background-color: yellow;
+        }
     include layouts/default-css-and-js.pug
+    
 </head>
 
 <body>
@@ -16,8 +21,8 @@
             .row
                 .col-md-6
                     each image in images
-                        - var img = `images/${image.fileName}`
-                            img(src=img, alt="", class="img-thumbnail rounded mx-auto")
+                        a(href=`/edit-image/${image.fileName}`)
+                            img(src=`images/${image.fileName}`, alt="", class="img-thumbnail rounded mx-auto")
                            
     else 
         p.bg-warning Nenhuma imagem encontrada.
