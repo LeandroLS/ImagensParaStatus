@@ -9,7 +9,8 @@ html(lang="pt-br")
     body
         include layouts/header.pug
         .container
-            if(image)
-                img(src=`/images/${image.fileName}`, width='100%')
-            else
-                p.text-warning Nenhuma imagem encontrada
+            .text-center
+                if(image)
+                    img(src=`/images/${image.fileName}`, width='50%')
+                else
+                    p.text-warning Nenhuma imagem encontrada
