@@ -10,6 +10,6 @@ html(lang="pt-br")
         include layouts/header.pug
         .container
             if(image)
-                img(src=`/images/${image.fileName}`)
+                img(src=`/images/${image.fileName}`, width='100%')
             else
                 p.text-warning Nenhuma imagem encontrada
