@@ -13,6 +13,10 @@ app.get('/', (req, res) => {
     });
 });
 
+app.get('/teste', (req,res) => {
+    res.render('teste');
+});
+
 app.get('/upload-images', (req, res) => {
     return res.render('upload-images');
 });

@@ -9,8 +9,15 @@ html(lang="pt-br")
     body
         include layouts/header.pug
         .container
-            .text-center
-                if(image)
-                    img(src=`/images/${image.fileName}`, width='50%')
-                else
-                    p.text-warning Nenhuma imagem encontrada
+            form(action="/escreve-imagem", method="post")
+                .text-center
+                    if(image)
+                        div(width='75%')
+                            h1(class="draggable text-edit") SEU TEXTO AQUI.
+                            img(src=`/images/${image.fileName}`, width='100%', height='100%', id='image')
+                        button(class="btn btn-primary", value="submit") Enviar
+                    else
+                        p.text-warning Nenhuma imagem encontrada
+    script(type="text/javascript" src="/js/draggin.min.js")
+    script. 
+
