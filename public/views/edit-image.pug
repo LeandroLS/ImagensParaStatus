@@ -9,15 +9,31 @@ html(lang="pt-br")
     body
         include layouts/header.pug
         .container
-            form(action="/escreve-imagem", method="post")
-                .text-center
-                    if(image)
-                        div(width='75%')
-                            h1(class="draggable text-edit") SEU TEXTO AQUI.
-                            img(src=`/images/${image.fileName}`, width='100%', height='100%', id='image')
-                        button(class="btn btn-primary", value="submit") Enviar
-                    else
-                        p.text-warning Nenhuma imagem encontrada
+            if(image)
+                form(action="/write-on-image", method="post")
+                    input(type="hidden", name="userText", id="userText")
+                    input(type="hidden", name="pathOriginalImage", value=`/images/${image.fileName}`)
+                    div.row
+                        div.col-md-3.text-center
+                            h3 Textos
+                            h5(id="texto") texto
+                        div.col-md-6
+                            h1(style="display:none", id="hiddenUserText", class="draggable text-edit") Olá
+                            img.card-img-top(src=`/images/${image.fileName}`)
+                            .card-body
+                                h5.card-title Card title
+                                p.card-text
+                                    | Some quick example text to build on the card title and make up the bulk of the card&apos;s content.
+                                button.btn.btn-primary(type="submit", id="edit") Editar
+            else
+                p.text-warning Nenhuma imagem encontrada
     script(type="text/javascript" src="/js/draggin.min.js")
-    script. 
+    script.
+        $("#texto").on('click', () => {
+            $("#hiddenUserText").show();
+        });
+        $("#edit").on('click', () =>{
+            $("#userText").val($("#hiddenUserText").text());
+        });
+
 
