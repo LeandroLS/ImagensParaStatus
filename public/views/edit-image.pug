@@ -6,11 +6,6 @@ html(lang="pt-br")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         include layouts/default-css-and-js.pug
         title Document
-        style. 
-            @font-face {
-                font-family: "jokerman";
-                src: url(http://localhost:8000/public/fonts/jokerman.png) format("truetype");
-            }
     body
         include layouts/header.pug
         .container
@@ -19,11 +14,21 @@ html(lang="pt-br")
                     input(type="hidden", name="userText", id="userText")
                     input(type="hidden", name="pctX", id="pctX")
                     input(type="hidden", name="pctY", id="pctY")
-                    input(type="hidden", name="originalImgName", value=`${image.fileName}`)
+                    input(type="hidden", name="originalImgName", id="originalImgName", value=`${image.fileName}`)
+                    input(type="hidden", name="fontChosen", id="fontChosen")
                     div.row
                         div.col-md-3.text-center
                             h1 Fontes
-                            h5(style="font-family:jokerman", id="texto") texto
+                            if(fonts)
+                                each font in fonts
+                                    p(style=`font-family:${font.fontName}`, class="font", id=`${font.fontName}`) FONTE
+                                label Tamanho da Fonte
+                                select.form-control(name="fontSize", id="fontSize")
+                                    option(value="18") 18
+                                    option(value="24") 24
+                                    option(value="36") 36
+                                    option(value="48") 48
+                                    option(value="60") 60
                         div.col-md-6
                             div#img-container
                                 h1(style="display:none;", id="hiddenUserText", class="draggable text-edit") Dois cliques para editar esse texto
@@ -37,17 +42,15 @@ html(lang="pt-br")
                 p.text-warning Nenhuma imagem encontrada
     script(type="text/javascript" src="/js/draggin.min.js")
     script.
-        $("#texto").on('click', () => {
+        $(".font").on('click', (event) => {
             $("#hiddenUserText").show();
-            $("#hiddenUserText").css('font-family', 'jokerman');
+            $("#hiddenUserText").css('font-family', event.target.id);
+            $("#hiddenUserText").css('font-size', $("#fontSize").val() + "px");
         });
-
-        //- $(document).ready(() => {
-        //-     $("#hiddenUserText").show();
-        //- });
 
         $("#save").on('click', () =>{
             $("#userText").val($("#hiddenUserText").text());
+            $("#fontChosen").val($("#hiddenUserText").css('font-family'));
             calcImgSizeInPct();
         });
 
