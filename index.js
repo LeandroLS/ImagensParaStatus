@@ -1,4 +1,5 @@
 const app = require('./config/express');
+const util = require('./config/util');
 const upload = require('./config/upload');
 const imageDB = require('./database/collectionImages');
 const jimp = require('jimp');
@@ -24,16 +25,6 @@ app.get('/upload-images', (req, res) => {
     return res.render('upload-images');
 });
 
-app.get('/edit-image/:fileName', (req, res) => {
-    let query = { 'fileName' : req.params.fileName };
-    let images = imageDB.list(query);
-    images.then((image) => {
-        return res.render('edit-image', { image : image[0] });
-    }).catch((err) => {
-        return res.render('edit-image');
-    });
-});
-
 app.post('/images', upload.single('image'), (req, res) => {
     if(req.file){
         let image = imageDB.insert({
@@ -50,14 +41,34 @@ app.post('/images', upload.single('image'), (req, res) => {
     return res.redirect(301,'upload-images');
 });
 
-app.post('/write-on-image', (req,res) => {
+app.get('/edit-image/:fileName', (req, res) => {
+    let query = { 'fileName' : req.params.fileName };
+    let images = imageDB.list(query);
+    images.then((image) => {
+        return res.render('edit-image', { image : image[0] });
+    }).catch((err) => {
+        return res.render('edit-image');
+    });
+});
+
+app.post('/edit-image/:fileName', (req,res) => {
     let phrase = req.body.userText;
-    let pathImg = path.normalize(appPath.publicPath + req.body.pathOriginalImage);
+    let pctY = req.body.pctY;
+    let pctX = req.body.pctX;
+    let originalImgName = req.body.originalImgName;
+    
+    if(!phrase) {
+        res.redirect(`/edit-image/:${originalImgName}`);
+    }
+
+    let pathImg = path.normalize(appPath.publicPath + '\\images\\' + req.body.originalImgName);
     jimp.read(pathImg, function(err,img) {
         if(err) throw err;
-        jimp.loadFont(jimp.FONT_SANS_128_WHITE).then((font)=>{
-            img.print(font, 200, 200, phrase);
+        let position = util.calcPctOverImg(img.bitmap.width, img.bitmap.height, pctX, pctY);
+        jimp.loadFont(appPath.publicPath + '\\fonts\\jokerman.fnt').then((font)=>{
+            img.print(font, position.posX, position.posY, phrase);
             img.write(appPath.userImgPath + 'teste.jpg');
+            return res.redirect(`/`);
         }).catch((erro)=> {
             throw erro;
         });

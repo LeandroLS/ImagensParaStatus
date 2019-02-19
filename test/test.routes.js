@@ -39,17 +39,15 @@ describe('GET /edit-image/abobrinha', () => {
 });
 
 
-describe('POST /images', () => {
-    describe('POST /images sem imagem', () => {
-        it('Deve ser redirecionado para /upload-images.', (done) => {
-            chai.request('http://localhost:8000')
-                .post('/images')
-                .end((err,res) => {
-                    chai.expect(err).to.be.null;
-                    chai.expect(res).to.redirectTo('http://localhost:8000/upload-images');
-                    chai.expect(res).to.have.status(200);
-                    done();
-                });
-        });
+describe('POST /images sem imagem', () => {
+    it('Deve ser redirecionado para /upload-images.', (done) => {
+        chai.request('http://localhost:8000')
+            .post('/images')
+            .end((err,res) => {
+                chai.expect(err).to.be.null;
+                chai.expect(res).to.redirectTo('http://localhost:8000/upload-images');
+                chai.expect(res).to.have.status(200);
+                done();
+            });
     });
 });

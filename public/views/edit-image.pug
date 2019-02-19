@@ -6,34 +6,62 @@ html(lang="pt-br")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         include layouts/default-css-and-js.pug
         title Document
+        style. 
+            @font-face {
+                font-family: "jokerman";
+                src: url(http://localhost:8000/public/fonts/jokerman.png) format("truetype");
+            }
     body
         include layouts/header.pug
         .container
             if(image)
-                form(action="/write-on-image", method="post")
+                form(action=`/edit-image/${image.fileName}`, method="post")
                     input(type="hidden", name="userText", id="userText")
-                    input(type="hidden", name="pathOriginalImage", value=`/images/${image.fileName}`)
+                    input(type="hidden", name="pctX", id="pctX")
+                    input(type="hidden", name="pctY", id="pctY")
+                    input(type="hidden", name="originalImgName", value=`${image.fileName}`)
                     div.row
                         div.col-md-3.text-center
-                            h3 Textos
-                            h5(id="texto") texto
+                            h1 Fontes
+                            h5(style="font-family:jokerman", id="texto") texto
                         div.col-md-6
-                            h1(style="display:none", id="hiddenUserText", class="draggable text-edit") Olá
-                            img.card-img-top(src=`/images/${image.fileName}`)
+                            div#img-container
+                                h1(style="display:none;", id="hiddenUserText", class="draggable text-edit") Dois cliques para editar esse texto
+                                img.card-img-top(src=`/images/${image.fileName}`)
                             .card-body
                                 h5.card-title Card title
                                 p.card-text
                                     | Some quick example text to build on the card title and make up the bulk of the card&apos;s content.
-                                button.btn.btn-primary(type="submit", id="edit") Editar
+                                button.btn.btn-primary(type="submit", id="save") Salvar
             else
                 p.text-warning Nenhuma imagem encontrada
     script(type="text/javascript" src="/js/draggin.min.js")
     script.
         $("#texto").on('click', () => {
             $("#hiddenUserText").show();
+            $("#hiddenUserText").css('font-family', 'jokerman');
         });
-        $("#edit").on('click', () =>{
+
+        //- $(document).ready(() => {
+        //-     $("#hiddenUserText").show();
+        //- });
+
+        $("#save").on('click', () =>{
             $("#userText").val($("#hiddenUserText").text());
+            calcImgSizeInPct();
         });
+
+        /*
+        * Pega a proporção da imagem em porcentagem. 
+        */
+        function calcImgSizeInPct(){
+            let heigth = $("#img-container").height();
+            let width = $("#img-container").width();
+            let positionText = $("#hiddenUserText").position();
+            let pctPosY = Math.round((positionText.top / heigth) * 100);
+            let pctPosX = Math.round((positionText.left / width) * 100);
+            $("#pctY").val(pctPosY);
+            $("#pctX").val(pctPosX);
+        }
 
 
