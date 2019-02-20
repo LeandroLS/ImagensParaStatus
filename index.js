@@ -2,8 +2,7 @@ const app = require('./config/express');
 const upload = require('./config/upload');
 const imageDB = require('./database/collectionImages');
 const phraseDB = require('./database/collectionPhrases');
-const jimp = require('jimp');
-const appPath = require('./config/path');
+const ImgManipulator = require('./libs/ImgManipulator');
 
 app.get('/', (req, res) => {
     let images = imageDB.list( { phrase : { $exists: true } } );
@@ -16,28 +15,10 @@ app.get('/', (req, res) => {
     });
 });
 
-async function blurImgAndPrint(image){
-    let imageLoaded = await jimp.read(appPath.imgPath + 'original-images\\' + image.fileName);
-    imageLoaded.blur(10);
-    font = await jimp.loadFont(jimp.FONT_SANS_32_BLACK);
-    let maxWidth = 1000;
-    let maxHeight = 1000;
-    imageLoaded.print(font, 0, 0, 
-        {
-            text: 'objeto',
-            alignmentX: jimp.HORIZONTAL_ALIGN_CENTER,
-            alignmentY: jimp.VERTICAL_ALIGN_MIDDLE
-        },
-        maxWidth,
-        maxHeight
-    );
-    imageLoaded.write(appPath.editedImgPath + 'blurphrase.jpg');
-}
-
 app.get('/teste', (req,res) => {
     let images = imageDB.list();
     images.then(image => {
-        blurImgAndPrint(image[0]);
+        ImgManipulator.blurImgAndPrint(image[0]);
     });
 });
 

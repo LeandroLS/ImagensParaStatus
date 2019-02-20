@@ -1,4 +1,4 @@
-const util = require('../config/util');
+const util = require('../libs/util');
 const chai = require('chai');
 
 describe("Util calcPctOverImg()", () => {

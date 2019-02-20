@@ -1,4 +1,4 @@
-const util = require('./config/util');
+const util = require('./libs/util');
 const fontsDB = require('./database/collectionFonts');
 const jimp = require('jimp');
 const appPath = require('./config/path');
