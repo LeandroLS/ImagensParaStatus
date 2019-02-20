@@ -35,7 +35,7 @@ app.post('/edit-image/:fileName', (req,res) => {
         let position = util.calcPctOverImg(img.bitmap.width, img.bitmap.height, pctX, pctY);
         jimp.loadFont(appPath.fontsPath + font).then((font)=>{
             img.print(font, position.posX, position.posY, phrase);
-            img.write(appPath.userImgPath + 'teste.jpg');
+            img.write(appPath.editedImgPath + 'teste.jpg');
             return res.redirect(`/`);
         }).catch((erro)=> {
             throw erro;

@@ -31,7 +31,7 @@ async function blurImgAndPrint(image){
         maxWidth,
         maxHeight
     );
-    imageLoaded.write(appPath.userImgPath + 'blurphrase.jpg');
+    imageLoaded.write(appPath.editedImgPath + 'blurphrase.jpg');
 }
 
 app.get('/teste', (req,res) => {
@@ -61,4 +61,4 @@ app.post('/images', upload.single('image'), (req, res) => {
     return res.redirect(301,'upload-images');
 });
 
-app.listen(8000);
+app.listen(1010);
