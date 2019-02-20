@@ -22,8 +22,7 @@
                 .col-md-6
                     each image in images
                         if(image.enabled)
-                            a(href=`/edit-image/${image.fileName}`)
-                                img(src=`images/${image.fileName}`, alt="", class="img-thumbnail rounded mx-auto")
+                            img(src=`images/${image.fileName}`, alt="", class="img-thumbnail rounded mx-auto")
     else 
         p.bg-warning Nenhuma imagem encontrada.
 </body>
