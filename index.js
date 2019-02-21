@@ -3,9 +3,10 @@ const upload = require('./config/upload');
 const imageDB = require('./database/collectionImages');
 const phraseDB = require('./database/collectionPhrases');
 const ImgManipulator = require('./libs/ImgManipulator');
+const imageEditedDB = require('./database/collectionEditedImages');
 
 app.get('/', (req, res) => {
-    let images = imageDB.list( { phrase : { $exists: true } } );
+    let images = imageEditedDB.list( { phrase : { $exists: true } } );
     images.then((images) => {
         return res.render('index', {
             images : images
@@ -16,9 +17,32 @@ app.get('/', (req, res) => {
 });
 
 app.get('/teste', (req,res) => {
-    let images = imageDB.list();
-    images.then(image => {
-        ImgManipulator.blurImgAndPrint(image[0]);
+    res.send('e ai crl');
+    console.log('passei aqui');
+    let originalImages = imageDB.list({ phrase : { $exists: false } })
+    .then(images =>{
+        return images
+    });
+    let phrases = phraseDB.list({ used : { $exists: false } })
+    .then(phrases => {
+        return phrases;
+    });
+
+    Promise.all([originalImages, phrases]).then((data)=>{
+        let arrPhrases = data[1];
+        let arrOriginalImages = data[0];
+        console.log(arrPhrases);
+        arrPhrases.forEach((element, index) => {
+            phrases.updateOne({phrase: element.phrase}, {$set:{used:true}})
+            ImgManipulator.edit(arrOriginalImages[index]);
+            imageEditedDB.insert({
+                enabled: true,
+                fileName: arrOriginalImages[index].fileName,
+                phrase: element.phrase,
+                alt: element.phrase,
+                category: element.category
+            });
+        });
     });
 });
 
@@ -29,7 +53,7 @@ app.get('/upload-images', (req, res) => {
 app.post('/images', upload.single('image'), (req, res) => {
     if(req.file){
         let image = imageDB.insert({
-            enabled: true,
+            hasPhrase: false,
             originalName: req.file.originalname, 
             fileName: req.file.filename
         });
@@ -42,4 +66,4 @@ app.post('/images', upload.single('image'), (req, res) => {
     return res.redirect(301,'upload-images');
 });
 
-app.listen(1010);
+app.listen(8000);

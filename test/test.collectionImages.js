@@ -1,6 +1,6 @@
 const imageDB = require('../database/collectionImages');
 const chai = require('chai');
-let query =  { 'fileName' : 'imgteste.jpeg', 'originalName' : 'imgteste.jpeg', 'enabled': false };
+let query =  { 'fileName' : 'imgteste.jpeg', 'originalName' : 'imgteste.jpeg', 'hasPrhase': false };
 describe('Collection de Images', () =>{
     describe('imageCollection.remove(fileName:value)', () => {
         it('Removendo imagem.', (done) => {
@@ -32,7 +32,7 @@ describe('Collection de Images', () =>{
             let images = imageDB.list();
             images.then((images) => {
                 chai.expect(images).to.be.an('array');
-                chai.expect(images[0]).to.have.keys(['_id','enabled','fileName', 'originalName']);
+                chai.expect(images[0]).to.have.keys(['_id','hasPrhase','fileName', 'originalName']);
                 done();
             }).catch((erro) => {
                 if (erro) done(erro);
@@ -44,7 +44,7 @@ describe('Collection de Images', () =>{
             let images = imageDB.list(query);
             images.then((images) => {
                 chai.expect(images).to.be.an('array');
-                chai.expect(images[0]).to.have.keys(['_id','fileName', 'originalName', 'enabled']);
+                chai.expect(images[0]).to.have.keys(['_id','fileName', 'originalName', 'hasPrhase']);
                 chai.expect(images[0].fileName).to.be.equal('imgteste.jpeg');
                 done();
             }).catch((erro) => {
