@@ -2,11 +2,11 @@ const app = require('./config/express');
 const upload = require('./config/upload');
 const imageDB = require('./database/collectionImages');
 const phraseDB = require('./database/collectionPhrases');
-const ImgManipulator = require('./libs/ImgManipulator');
-const imageEditedDB = require('./database/collectionEditedImages');
+const categoryDB = require('./database/collectionCategories');
+const util = require('./libs/util');
 
 app.get('/', (req, res) => {
-    let images = imageEditedDB.list( { phrase : { $exists: true } } );
+    let images = imageDB.list();
     images.then((images) => {
         return res.render('index', {
             images : images
@@ -16,33 +16,18 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/teste', (req,res) => {
-    res.send('e ai crl');
-    console.log('passei aqui');
-    let originalImages = imageDB.list({ phrase : { $exists: false } })
-    .then(images =>{
-        return images
-    });
-    let phrases = phraseDB.list({ used : { $exists: false } })
-    .then(phrases => {
-        return phrases;
-    });
+app.get('/dashboard', (req,res) => {
+    return res.render('dashboard/dashboard');
+});
 
-    Promise.all([originalImages, phrases]).then((data)=>{
-        let arrPhrases = data[1];
-        let arrOriginalImages = data[0];
-        console.log(arrPhrases);
-        arrPhrases.forEach((element, index) => {
-            phrases.updateOne({phrase: element.phrase}, {$set:{used:true}})
-            ImgManipulator.edit(arrOriginalImages[index]);
-            imageEditedDB.insert({
-                enabled: true,
-                fileName: arrOriginalImages[index].fileName,
-                phrase: element.phrase,
-                alt: element.phrase,
-                category: element.category
-            });
+app.get('/dashboard/images', (req,res) => {
+    let images = imageDB.list();
+    images.then((images) => {
+        return res.render('dashboard/dashboard-images', {
+            images : images
         });
+    }).catch((err) => {
+        return res.render('dashboard-images');
     });
 });
 
@@ -52,18 +37,39 @@ app.get('/upload-images', (req, res) => {
 
 app.post('/images', upload.single('image'), (req, res) => {
     if(req.file){
-        let image = imageDB.insert({
-            hasPhrase: false,
-            originalName: req.file.originalname, 
-            fileName: req.file.filename
-        });
-        image.then((result)=>{
-            return res.redirect(301,'upload-images');
-        }).catch((err)=>{
-            if(err) return res.redirect(301,'upload-images');
+        let originalName = req.file.originalname;
+        let fileName =  req.file.filename;
+        let phrase = req.body.phrase;
+        let category = req.body.category;
+        util.checkIfDataExists(phrase, category).then((result) => {
+            if(result.success){
+                let imagePromise = imageDB.insert({
+                    originalName: originalName, 
+                    fileName: fileName,
+                    category: category,
+                    phrase: phrase,
+                    enabled: true
+                });
+                
+                let phrasePromise = phraseDB.insert({
+                    phrase: phrase,
+                    category: category
+                });
+        
+                let categoryPromise = categoryDB.insert({
+                    category : category
+                })
+                Promise.all([imagePromise, phrasePromise, categoryPromise]).then(data =>{
+                    return res.redirect(301,'upload-images');
+                }).catch((err)=>{
+                    if(err) return res.redirect(301,'upload-images');
+                });
+            } else {
+                return res.redirect(301,'upload-images');
+            }
         });
     }
     return res.redirect(301,'upload-images');
 });
 
-app.listen(8000);
+app.listen(9090);

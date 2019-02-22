@@ -1,6 +1,6 @@
 const imageDB = require('../database/collectionImages');
 const chai = require('chai');
-let query =  { 'fileName' : 'imgteste.jpeg', 'originalName' : 'imgteste.jpeg', 'hasPrhase': false };
+let query =  { 'fileName' : 'imgteste.jpeg', 'originalName' : 'imgteste.jpeg', 'enabled': false, 'phrase': 'teste', 'category': 'teste' };
 describe('Collection de Images', () =>{
     describe('imageCollection.remove(fileName:value)', () => {
         it('Removendo imagem.', (done) => {

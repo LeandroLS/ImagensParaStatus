@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 const dbName = 'EscreverNaImagem';
-const collection = 'EditedImages';
+const collection = 'Categories';
 const client = new MongoClient(url, { useNewUrlParser: true });
 
 async function connectDB(){
@@ -15,16 +15,6 @@ async function connectDB(){
     }
 }
 
-async function insert(image){
-    try {
-        let col = await connectDB();
-        let result = await col.insertOne(image);
-        return result;
-    } catch (error) {
-        throw error;
-    }
-}
-
 async function list(query = {}){
     try {
         let col = await connectDB();
@@ -32,6 +22,16 @@ async function list(query = {}){
         return result;
     } catch (err) {
         throw err;
+    }
+}
+
+async function insert(image){
+    try {
+        let col = await connectDB();
+        let result = await col.insertOne(image);
+        return result;
+    } catch (error) {
+        throw error;
     }
 }
 

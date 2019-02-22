@@ -7,10 +7,18 @@ html(lang="pt-br")
         include layouts/default-css-and-js.pug
         title Document
     body
-        include layouts/header.pug
+        header
+            include layouts/header.pug
         .container
+            h1 Upload de Imagens
             form(action="/images", method="post", enctype="multipart/form-data")
-                label Upload de Imagem
                 .form-group
-                    input(type="file", name="image", class="form-control-file")
+                    label(for="image") Upload de Imagem
+                    input(type="file", name="image", class="form-control-file", required)
+                .form-group
+                    label(for="phrase") Frase
+                    input(type="text", name="phrase", class="form-control",  required)
+                .form-group
+                    label(for="") Categoria
+                    input(type="text", class="form-control", name="category",  required)
                 button(type="submit", class="btn btn-primary", value="Upload") Enviar

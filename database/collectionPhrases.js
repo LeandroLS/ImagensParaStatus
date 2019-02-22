@@ -25,6 +25,16 @@ async function list(query = {}){
     }
 }
 
+async function insert(image){
+    try {
+        let col = await connectDB();
+        let result = await col.insertOne(image);
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
 async function updateOne(query){
     try {
         let col = await connectDB();
@@ -37,5 +47,6 @@ async function updateOne(query){
 
 module.exports = {
     list,
-    updateOne
+    updateOne,
+    insert
 }

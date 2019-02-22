@@ -1,6 +1,5 @@
 const jimp = require('jimp');
 const appPaths = require('../config/path');
-const moment = require('moment');
 module.exports = {
     async loadImage(imageName){
         let imageLoaded = await jimp.read(appPaths.originalImgPath + imageName);
