@@ -1,12 +1,12 @@
 const app = require('./config/express');
 const upload = require('./config/upload');
-const imageDB = require('./database/collectionImages');
-const phraseDB = require('./database/collectionPhrases');
-const categoryDB = require('./database/collectionCategories');
 const util = require('./libs/util');
-
+const DB = require('./database/DB');
+const collectionImages = new DB('Images');
+const collectionPhrase = new DB('Phrases');
+const collectionCategories = new DB('Categories');
 app.get('/', (req, res) => {
-    let images = imageDB.list();
+    let images = collectionImages.list();
     images.then((images) => {
         return res.render('index', {
             images : images
@@ -21,7 +21,7 @@ app.get('/dashboard', (req,res) => {
 });
 
 app.get('/dashboard/images', (req,res) => {
-    let images = imageDB.list();
+    let images = collectionImages.list();
     images.then((images) => {
         return res.render('dashboard/dashboard-images', {
             images : images
@@ -43,7 +43,7 @@ app.post('/images', upload.single('image'), (req, res) => {
         let category = req.body.category;
         util.checkIfDataExists(phrase, category).then((result) => {
             if(result.success){
-                let imagePromise = imageDB.insert({
+                let imagePromise = collectionImages.insert({
                     originalName: originalName, 
                     fileName: fileName,
                     category: category,
@@ -51,12 +51,12 @@ app.post('/images', upload.single('image'), (req, res) => {
                     enabled: true
                 });
                 
-                let phrasePromise = phraseDB.insert({
+                let phrasePromise = collectionPhrase.insert({
                     phrase: phrase,
                     category: category
                 });
         
-                let categoryPromise = categoryDB.insert({
+                let categoryPromise = collectionCategories.insert({
                     category : category
                 })
                 Promise.all([imagePromise, phrasePromise, categoryPromise]).then(data =>{
