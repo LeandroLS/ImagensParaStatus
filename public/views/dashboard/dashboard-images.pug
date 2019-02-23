@@ -13,4 +13,10 @@ html(lang="pt-br")
                 .row
                     each image in images
                         .col-md-4
-                            img(src=`../images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-thumbnail")
+                            <div class="card">
+                                img(src=`../images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-thumbnail card-img-top")
+                                <div class="card-body">
+                                    <p class="card-text"> #{image.phrase} </p>
+                                </div>
+                                button.btn-primary Remover
+                            </div>

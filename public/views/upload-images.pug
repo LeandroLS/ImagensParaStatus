@@ -11,6 +11,10 @@ html(lang="pt-br")
             include layouts/header.pug
         .container
             h1 Upload de Imagens
+            if(message.success == true)
+                p.bg-success #{message.message}
+            else
+                p.bg-danger #{message.message}
             form(action="/images", method="post", enctype="multipart/form-data")
                 .form-group
                     label(for="image") Upload de Imagem
