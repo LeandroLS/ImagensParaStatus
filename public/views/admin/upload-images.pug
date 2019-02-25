@@ -4,11 +4,11 @@ html(lang="pt-br")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        include layouts/default-css-and-js.pug
+        include ../layouts/default-css-and-js.pug
         title Document
     body
         header
-            include layouts/header.pug
+            include ../layouts/header.pug
         .container
             h1 Upload de Imagens
             if(message.success)
@@ -23,6 +23,13 @@ html(lang="pt-br")
                     label(for="phrase") Frase
                     input(type="text", name="phrase", class="form-control",  required)
                 .form-group
-                    label(for="") Categoria
-                    input(type="text", class="form-control", name="category",  required)
+                    label(for="") Categoria (Nova categoria)
+                    input(type="text", class="form-control", name="category")
+                if(categories.length >= 1)
+                    .form-group
+                        label(for="existentCategory") Categorias Existentes
+                        select(name="existentCategory", class="form-control")
+                            option(value="") Selecione
+                            for category in categories
+                                option(value=`${category.category}`) #{category.category}
                 button(type="submit", class="btn btn-primary", value="Upload") Enviar

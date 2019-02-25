@@ -20,13 +20,27 @@
     if(images.length >= 1)
         .container-fluid
             .row
-                .offset-md-2.col-md-8
+                .offset-md-1.col-md-7
                     each image in images
-                        if(image.enabled)
-                            div.card
-                                div.card-body
-                                    p.blockquote
-                                        img(src=`images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
+                        div.card
+                            div.card-body
+                                p.blockquote
+                                    img(src=`images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
+                                <p class="card-text"> #{image.phrase} </p>
+                                <p class="card-text"> Categoria: #{image.category} </p>
+                .col-md-4
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> Categorias </h3>
+                        </div>
+                        <ul class="list-group">
+                            <a href="#" class="list-group-item">Cras justo odio</a>
+                            <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                            <a href="#" class="list-group-item">Morbi leo risus</a>
+                            <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                            <a href="#" class="list-group-item">Vestibulum at eros</a>
+                        </ul>
+                    </div>
     else 
         p.bg-warning Nenhuma imagem encontrada.
 </body>

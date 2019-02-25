@@ -54,16 +54,25 @@ app.get('/admin/remove-image', (req,res) => {
             console.log('Imagem movida com sucesso');
         });
         return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
+    }).then(()=>{
+        collectionPhrase.updateOne(fileName, {$set: {fileName: ""} });
     }).catch(err =>{
-        console.log(err);
+        let message = {
+            success: false,
+            message: "Algo deu errado."
+        }
+        return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
     });
 });
 
-app.get('/upload-images', (req, res) => {
+app.get('/admin/upload-images', (req, res) => {
     let message = req.query;
-    return res.render('upload-images', {
-        message : message,
-    });
+    collectionCategories.list().then(categories => {
+        return res.render('admin/upload-images', {
+            message : message,
+            categories : categories
+        });
+    })
 });
 
 app.post('/images', upload.single('image'), (req, res) => {
@@ -71,12 +80,18 @@ app.post('/images', upload.single('image'), (req, res) => {
     let fileName =  req.file.filename;
     let phrase = req.body.phrase;
     let category = req.body.category;
-    
-    collectionPhrase.list({ phrase : phrase }).then(phrase => {
-        if(phrase.length == 0){
+    let categoryExistent = req.body.existentCategory;
+
+    if(categoryExistent != ""){
+        category = categoryExistent;
+    }
+
+    collectionPhrase.list({ phrase : phrase }).then(phraseResult => {
+        if(phraseResult.length == 0){
             collectionPhrase.insert({
                 phrase: phrase,
-                category: category
+                category: category,
+                fileName: fileName
             });
         } else {
             let result = {
@@ -87,8 +102,8 @@ app.post('/images', upload.single('image'), (req, res) => {
         }
     }).then(() => {
         collectionCategories.list({category : category})
-        .then(category => {
-            if(!category){
+        .then(categoryResult => {
+            if(categoryResult.length == 0){
                 collectionCategories.insert({
                     category : category
                 })
@@ -99,16 +114,15 @@ app.post('/images', upload.single('image'), (req, res) => {
             originalName: originalName, 
             fileName: fileName,
             category: category,
-            phrase: phrase,
-            enabled: true
+            phrase: phrase
         });
         let result = {
             success: true,
             message: "Imagem inserida com sucesso."
         }
-        return res.redirect('/upload-images?success=false' +  result.success + '&message=' + result.message);
+        return res.redirect('admin/upload-images?success=false' +  result.success + '&message=' + result.message);
     }).catch(erro => {
-        return res.redirect('/upload-images?success=false' +  erro.success + '&message=' + erro.message);
+        return res.redirect('admin/upload-images?success=false' +  erro.success + '&message=' + erro.message);
     });
 });
 

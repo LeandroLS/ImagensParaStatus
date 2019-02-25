@@ -45,4 +45,14 @@ module.exports = class DB {
             throw err;
         }
     }
+
+    async updateOne(object, newValues) {
+        try {
+            let db = await this.connectDB();
+            let result = await db.collection(this.collection).updateOne(object, newValues);
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
 }
