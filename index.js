@@ -7,13 +7,15 @@ const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
 const collectionCategories = new DB('Categories');
 app.get('/', (req, res) => {
-    let images = collectionImages.list();
-    images.then((images) => {
-        return res.render('index', {
-            images : images
+    collectionImages.list().then(images => {
+        return images;
+    }).then(images => {
+        collectionCategories.list().then(categories => {
+            return res.render('index', {
+                images : images,
+                categories : categories
+            });
         });
-    }).catch((err) => {
-        return res.render('index');
     });
 });
 

@@ -33,13 +33,11 @@
                         <div class="panel-heading">
                             <h3 class="panel-title"> Categorias </h3>
                         </div>
-                        <ul class="list-group">
-                            <a href="#" class="list-group-item">Cras justo odio</a>
-                            <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-                            <a href="#" class="list-group-item">Morbi leo risus</a>
-                            <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                            <a href="#" class="list-group-item">Vestibulum at eros</a>
-                        </ul>
+                        if(categories)
+                            <ul class="list-group">
+                                for categorie in categories
+                                    <a href="#" class="list-group-item"> #{categorie.category} </a>
+                            </ul>
                     </div>
     else 
         p.bg-warning Nenhuma imagem encontrada.
