@@ -11,7 +11,7 @@ html(lang="pt-br")
             include layouts/header.pug
         .container
             h1 Upload de Imagens
-            if(message.success == true)
+            if(message.success)
                 p.bg-success #{message.message}
             else
                 p.bg-danger #{message.message}

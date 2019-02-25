@@ -39,7 +39,7 @@ module.exports = class DB {
     async remove(imagem) {
         try {
             let db = await this.connectDB();
-            let result = await db.collecion(this.collection).remove(imagem, { justOne:true } );
+            let result = await db.collection(this.collection).deleteOne(imagem);
             return result;
         } catch (err) {
             throw err;

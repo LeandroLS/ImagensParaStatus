@@ -9,6 +9,10 @@ html(lang="pt-br")
         header
             include ../layouts/header.pug
         .container
+            if(message.success)
+                p.bg-success #{message.message}
+            else
+                p.bg-danger #{message.message}
             if(images)
                 .row
                     each image in images
@@ -17,6 +21,9 @@ html(lang="pt-br")
                                 img(src=`../images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-thumbnail card-img-top")
                                 <div class="card-body">
                                     <p class="card-text"> #{image.phrase} </p>
+                                    <p class="card-text"> Categoria: #{image.category} </p>
                                 </div>
-                                button.btn-primary Remover
+                                a(href=`http://localhost:9090/admin/remove-image?fileName=${image.fileName}`, class="btn btn-danger") Remover
                             </div>
+    script. 
+        console.log("#{message.message}");

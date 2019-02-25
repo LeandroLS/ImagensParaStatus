@@ -1,7 +1,8 @@
 const app = require('./config/express');
 const upload = require('./config/upload');
-// const util = require('./libs/util');
+const { rename } = require('fs');
 const DB = require('./database/DB');
+const path = require('path');
 const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
 const collectionCategories = new DB('Categories');
@@ -16,18 +17,45 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/dashboard', (req,res) => {
-    return res.render('dashboard/dashboard');
+app.get('/admin', (req,res) => {
+    return res.render('admin/admin');
 });
 
-app.get('/dashboard/images', (req,res) => {
+app.get('/admin/images', (req,res) => {
+    let message = '';
+    if(req.query){
+        message = req.query;
+    } else {
+        message = false;
+    }
     let images = collectionImages.list();
     images.then((images) => {
-        return res.render('dashboard/dashboard-images', {
-            images : images
+        return res.render('admin/admin-images', {
+            images : images,
+            message : message
         });
     }).catch((err) => {
-        return res.render('dashboard-images');
+        console.log(err);
+    });
+});
+
+app.get('/admin/remove-image', (req,res) => {
+    let fileName = req.query;
+    collectionImages.remove(fileName).then(result => {
+        let message = {
+            success: true,
+            message: 'Imagem removida com sucesso.' 
+        }
+        rename(
+            path.normalize('./public/images/original-images/' + fileName.fileName), 
+            path.normalize('./public/images/deleted-images/' + fileName.fileName), 
+            (err) => {
+            if(err) throw err;
+            console.log('Imagem movida com sucesso');
+        });
+        return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
+    }).catch(err =>{
+        console.log(err);
     });
 });
 
@@ -39,14 +67,13 @@ app.get('/upload-images', (req, res) => {
 });
 
 app.post('/images', upload.single('image'), (req, res) => {
-
     let originalName = req.file.originalname;
     let fileName =  req.file.filename;
     let phrase = req.body.phrase;
     let category = req.body.category;
     
     collectionPhrase.list({ phrase : phrase }).then(phrase => {
-        if(!phrase){
+        if(phrase.length == 0){
             collectionPhrase.insert({
                 phrase: phrase,
                 category: category
