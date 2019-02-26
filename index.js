@@ -9,8 +9,10 @@ const collectionCategories = new DB('Categories');
 
 app.get('/:category?', (req, res) => {
     let category = req.params.category;
+    let header = "Imagens.";
     if(category) {
-        var filter = { category : category }
+        var filter = { category : category };
+        header = `Imagens de ${category}.`;  
     } else {
         var filter = {};
     }
@@ -20,7 +22,8 @@ app.get('/:category?', (req, res) => {
         collectionCategories.list().then(categories => {
             return res.render('index', {
                 images : images,
-                categories : categories
+                categories : categories,
+                header : header
             });
         });
     });
