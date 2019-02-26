@@ -1,6 +1,4 @@
 const DB = require('../database/DB');
-const collectionPhrase = new DB('Phrases');
-const collectionCategories = new DB('Categories');
 module.exports = {
     /**
      * Data determinada porcentagem, calcular a posição da mesma sobra a imagem.

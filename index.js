@@ -29,6 +29,23 @@ app.get('/:category?', (req, res) => {
     });
 });
 
+app.get('/search/phrase', (req, res) => {
+    let query = req.query;
+    let phrase = query.phrase;
+    collectionImages.list({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}})
+    .then(images => {
+        console.log(images);
+        return images
+    }).then(images => {
+        collectionCategories.list().then(categories => {
+            return res.render('index', {
+                images : images,
+                categories : categories
+            });
+        });
+    });
+});
+
 app.get('/admin', (req,res) => {
     return res.render('admin/admin');
 });
