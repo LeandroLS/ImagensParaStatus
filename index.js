@@ -6,8 +6,15 @@ const path = require('path');
 const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
 const collectionCategories = new DB('Categories');
-app.get('/', (req, res) => {
-    collectionImages.list().then(images => {
+
+app.get('/:category?', (req, res) => {
+    let category = req.params.category;
+    if(category) {
+        var filter = { category : category }
+    } else {
+        var filter = {};
+    }
+    collectionImages.list(filter).then(images => {
         return images;
     }).then(images => {
         collectionCategories.list().then(categories => {

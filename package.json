@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "ejs": "^2.6.1",
     "express": "^4.16.4",
     "jimp": "^0.6.0",
     "mime-types": "^2.1.21",
