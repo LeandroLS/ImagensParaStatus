@@ -26,6 +26,6 @@ html(lang="pt-br")
                                 a(href=`http://localhost:9090/admin/remove-image?fileName=${image.fileName}`, class="btn btn-danger") Remover
                             </div>
             else
-                p.bg-warning Nenhuma imagem no banco de dados.
+                div.alert.alert-warning Nenhuma imagem no banco de dados.
     script. 
         console.log("#{message.message}");

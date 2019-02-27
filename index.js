@@ -7,7 +7,21 @@ const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
 const collectionCategories = new DB('Categories');
 
-app.get('/:category?', (req, res) => {
+// app.use('/:category?', function(req, res, next) {
+//     let category = req.params.category;
+//     collectionCategories.list().then(categories => {
+//         let categoriesFilter = categories.filter(value => value.category == category);
+//         if(categoriesFilter.length >= 1){
+//             next();
+//         } else {
+//             return res.send('false');
+//         }
+//     });
+// });
+function myCallback(req, res, next) {
+    console.log(req);
+}
+app.get('/:category?', myCallback, (req, res) => {
     let category = req.params.category;
     let header = "Imagens.";
     if(category) {
