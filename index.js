@@ -7,21 +7,27 @@ const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
 const collectionCategories = new DB('Categories');
 
-// app.use('/:category?', function(req, res, next) {
-//     let category = req.params.category;
-//     collectionCategories.list().then(categories => {
-//         let categoriesFilter = categories.filter(value => value.category == category);
-//         if(categoriesFilter.length >= 1){
-//             next();
-//         } else {
-//             return res.send('false');
-//         }
-//     });
-// });
-function myCallback(req, res, next) {
-    console.log(req);
+function checkIfCategoryExists(req, res, next) {
+    let category = req.params.category;
+    if(typeof category === 'undefined'){
+        return next();
+    }
+
+    collectionCategories.list().then(categories => {
+        let categoriesFilter = categories.filter(value => value.category == category);
+        if(categoriesFilter.length >= 1){
+            return next();
+        } else {
+            return res.send('Página não existe.');
+        }
+    });
 }
-app.get('/:category?', myCallback, (req, res) => {
+
+function checkDataBeforeUploadImg(){
+
+}
+
+app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let category = req.params.category;
     let header = "Imagens.";
     if(category) {
@@ -163,9 +169,9 @@ app.post('/images', upload.single('image'), (req, res) => {
             success: true,
             message: "Imagem inserida com sucesso."
         }
-        return res.redirect('admin/upload-images?success=false' +  result.success + '&message=' + result.message);
+        return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message);
     }).catch(erro => {
-        return res.redirect('admin/upload-images?success=false' +  erro.success + '&message=' + erro.message);
+        return res.redirect('admin/upload-images?success=false&message=' + erro.message);
     });
 });
 
