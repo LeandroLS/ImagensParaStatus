@@ -62,7 +62,7 @@ app.get('/search/phrase', (req, res) => {
     });
 });
 
-app.get('/admin', (req,res) => {
+app.get('/admin/dashboard', (req,res) => {
     return res.render('admin/admin');
 });
 

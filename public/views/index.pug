@@ -11,6 +11,7 @@
             background-color: yellow;
         }
     include layouts/default-css-and-js.pug
+    script(src="/js/clipboard.min.js")
     
 </head>
 
@@ -27,7 +28,8 @@
                             div.card-body
                                 p.blockquote
                                     img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
-                                <p class="card-text"> #{image.phrase} </p>
+                                p(class="card-text" id="frase") #{image.phrase}
+                                button(class="btn btn-primary", id="copyToClipBoard", data-clipboard-target="#frase") Copiar
                                 <p class="card-text"> Categoria: #{image.category} </p>
                 .col-md-4
                     <div class="panel panel-primary">
@@ -43,5 +45,6 @@
     else
         div.alert.alert-warning Nenhuma imagem encontrada.
 </body>
-
+script.
+    new ClipboardJS('#copyToClipBoard');
 </html>
