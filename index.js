@@ -1,6 +1,6 @@
 const app = require('./config/express');
 const upload = require('./config/upload');
-const { rename } = require('fs');
+const { rename, unlink   } = require('fs');
 const DB = require('./database/DB');
 const path = require('path');
 const collectionImages = new DB('Images');
@@ -21,10 +21,6 @@ function checkIfCategoryExists(req, res, next) {
             return res.send('Página não existe.');
         }
     });
-}
-
-function checkDataBeforeUploadImg(){
-
 }
 
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
@@ -171,6 +167,10 @@ app.post('/images', upload.single('image'), (req, res) => {
         }
         return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message);
     }).catch(erro => {
+        unlink(path.normalize('./public/images/original-images/' + fileName), (err) => {
+            if(err) console.log(err);
+            console.log('Arquivo removido');
+        })
         return res.redirect('admin/upload-images?success=false&message=' + erro.message);
     });
 });

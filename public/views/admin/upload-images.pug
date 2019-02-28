@@ -11,7 +11,7 @@ html(lang="pt-br")
             include ../layouts/header.pug
         .container
             h1 Upload de Imagens
-            if(message.success)
+            if(message.success == 'true')
                 div.alert.alert-success #{message.message}
             else if (message.success == 'false')
                 div.alert.alert-danger #{message.message}
