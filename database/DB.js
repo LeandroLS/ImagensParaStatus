@@ -26,10 +26,20 @@ module.exports = class DB {
         }
     }
 
-    async list(query = {}){
+    async list(query = {}, limit = 999){
         try {
             let db = await this.connectDB();
-            let result = await db.collection(this.collection).find(query).toArray();
+            let result = await db.collection(this.collection).find(query).limit(limit).toArray();
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async count(){
+        try {
+            let db = await this.connectDB();
+            let result = await db.collection(this.collection).countDocuments();
             return result;
         } catch (err) {
             throw err;

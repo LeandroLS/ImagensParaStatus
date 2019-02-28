@@ -26,11 +26,10 @@ function checkIfCategoryExists(req, res, next) {
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let category = req.params.category;
     let header = "Imagens.";
+    var filter = {};
     if(category) {
-        var filter = { category : category };
+        filter = { category : category };
         header = `Imagens de ${category}.`;  
-    } else {
-        var filter = {};
     }
     collectionImages.list(filter).then(images => {
         return images;
@@ -43,6 +42,22 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
             });
         });
     });
+});
+
+app.get('/teste/teste', (req, res) => {
+    let imagesCount = collectionImages.count();
+
+    collectionImages.list({}, 1)
+        .then(images => {
+            collectionCategories.list().then(categories => {
+                return res.render('index', {
+                    images : images,
+                    categories : categories,
+                    imagesCount : imagesCount
+                });
+            });
+        }
+    );
 });
 
 app.get('/search/phrase', (req, res) => {
