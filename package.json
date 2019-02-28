@@ -1,5 +1,5 @@
 {
-  "name": "escrevanaimagem",
+  "name": "imagensparastatus",
   "version": "1.0.0",
   "description": "Site onde permite o usuário selecionar uma imagem e escrever algo nela",
   "main": "index.js",

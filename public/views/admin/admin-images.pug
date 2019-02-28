@@ -9,9 +9,9 @@ html(lang="pt-br")
         header
             include ../layouts/header.pug
         .container
-            if(message.success)
+            if(message.success == 'true')
                 p.bg-success #{message.message}
-            else
+            else if (message.success == 'false')
                 p.bg-danger #{message.message}
             if(images.length >= 1)
                 .row
