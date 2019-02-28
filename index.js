@@ -44,20 +44,23 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
     });
 });
 
-app.get('/teste/teste', (req, res) => {
-    let imagesCount = collectionImages.count();
-
-    collectionImages.list({}, 1)
+app.get('/page/:number', (req, res) => {
+    let imagesPerPage = 1;
+    collectionImages.count().then(imagesQtd => {
+        let numberOfPages = imagesQtd / imagesPerPage;
+        collectionImages.list({}, imagesPerPage)
         .then(images => {
             collectionCategories.list().then(categories => {
+                console.log(numberOfPages);
                 return res.render('index', {
                     images : images,
                     categories : categories,
-                    imagesCount : imagesCount
+                    numberOfPages : numberOfPages
                 });
             });
-        }
-    );
+        });
+    });
+   
 });
 
 app.get('/search/phrase', (req, res) => {
