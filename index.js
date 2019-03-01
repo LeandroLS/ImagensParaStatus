@@ -3,6 +3,10 @@ const app = require('./config/express');
 const upload = require('./config/upload');
 const { rename, unlink   } = require('fs');
 const DB = require('./database/DB');
+const DataBase = require('./database/DataBase');
+const db1 = DataBase;
+// db1.collection('Images').find({}).toArray().then(images => console.log(images));
+// DataBase.collection('Images').find().toArray().then(images => console.log(images));
 const path = require('path');
 const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
@@ -25,6 +29,13 @@ function checkIfCategoryExists(req, res, next) {
 }
 
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
+    db1.getDB().then(db => {
+        db.collection('Images').find().toArray().then(images => {
+            console.log(images);
+        });
+        db.close();
+    });
+
     let category = req.params.category;
     let header = "Imagens.";
     let imagesPerPage = 1;

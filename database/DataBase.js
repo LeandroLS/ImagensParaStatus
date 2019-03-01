@@ -1,20 +1,30 @@
-MongoClient = require('mongodb').MongoClient;
-class DataBase {
-    constructor(){
-        this.url = 'mongodb://localhost:27017';
-        this.dbName = 'EscreverNaImagem';
-        this.client = new MongoClient(this.url, { useNewUrlParser: true });
-    }
+const MongoClient = require('mongodb').MongoClient;
 
+// Connection URL
+const url = 'mongodb://localhost:27017';
+
+// Database Name
+const dbName = 'EscreverNaImagem';
+
+// Create a new MongoClient
+const client = new MongoClient(url);
+// Use connect method to connect to the Server
+
+
+module.exports = {
     async connectDB(){
         try {
-            await this.client.connect();
-            let db = this.client.db(this.dbName);
+            await client.connect();
+            let db = client.db(dbName);
             return db;
         } catch (error) {
             throw error
         }
+    },
+    
+    async getDB(){
+        let db = await this.connectDB();
+        return db;
     }
-}
-db = new DataBase();
-module.exports = db.connectDB();
+    
+};
