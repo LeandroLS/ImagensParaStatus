@@ -3,10 +3,8 @@ const app = require('./config/express');
 const upload = require('./config/upload');
 const { rename, unlink   } = require('fs');
 const DB = require('./database/DB');
-const DataBase = require('./database/DataBase');
-const db1 = DataBase;
-// db1.collection('Images').find({}).toArray().then(images => console.log(images));
-// DataBase.collection('Images').find().toArray().then(images => console.log(images));
+const DBConnection = require('./database/DataBase');
+const DataBase = DBConnection;
 const path = require('path');
 const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
@@ -17,25 +15,19 @@ function checkIfCategoryExists(req, res, next) {
     if(typeof category === 'undefined'){
         return next();
     }
-
-    collectionCategories.find().then(categories => {
-        let categoriesFilter = categories.filter(value => value.category == category);
-        if(categoriesFilter.length >= 1){
-            return next();
-        } else {
-            return res.send('Página não existe.');
-        }
-    });
+    DataBase.getConnection().then(db => {
+        db.collection('Categories').find().toArray().then(categories => {
+            let categoriesFilter = categories.filter(value => value.category == category);
+            if(categoriesFilter.length >= 1){
+                return next();
+            } else {
+                return res.send('Página não existe.');
+            }
+        });
+    })
 }
 
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
-    db1.getDB().then(db => {
-        db.collection('Images').find().toArray().then(images => {
-            console.log(images);
-        });
-        db.close();
-    });
-
     let category = req.params.category;
     let header = "Imagens.";
     let imagesPerPage = 1;
@@ -44,21 +36,18 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
         filter = { category : category };
         header = `Imagens de ${category}.`;  
     }
-    let numberOfPages = collectionImages.count().then(qtdImages => {
-        return Math.floor(qtdImages / imagesPerPage); 
-    });
-    let images = collectionImages.find(filter, imagesPerPage).then(images => {
-        return images;
-    });
-    let categories = collectionCategories.find().then(categories => {
-        return categories;
-    });
-    Promise.all([numberOfPages, images, categories]).then(data => {
-        return res.render('index', {
-            images : data[1],
-            categories : data[2],
-            header : header,
-            numberOfPages : data[0]
+    DataBase.getConnection().then(db => {
+        let numberOfPages = db.collection('Images').countDocuments().then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
+        let images = db.collection('Images').find({}).limit(imagesPerPage).toArray().then(images => images);
+        let categories = db.collection('Categories').find().toArray().then(categories => categories);
+
+        Promise.all([numberOfPages, images, categories]).then(data => {
+            return res.render('index', {
+                images : data[1],
+                categories : data[2],
+                header : header,
+                numberOfPages : data[0]
+            });
         });
     });
 });
@@ -70,17 +59,15 @@ app.get('/page/:number', (req, res) => {
         pageNumber = 0;
     }
     let imagesPerPage = 1;
-    collectionImages.count().then(qtdImages => {
-        let numberOfPages = Math.floor(qtdImages / imagesPerPage);
-        collectionImages.find({ 'id' : { $gte: parseInt(pageNumber) } }, imagesPerPage)
-        .then(images => {
-            collectionCategories.find()
-            .then(categories => {
-                return res.render('index', {
-                    images : images,
-                    categories : categories,
-                    numberOfPages : numberOfPages
-                });
+    DataBase.getConnection().then(db => {
+        let numberOfPages = db.collection('Images').countDocuments().then(qtdImages => Math.floor(qtdImages / imagesPerPage));
+        let images = db.collection('Images').find({ 'id' : { $gte: parseInt(pageNumber) } }).limit(imagesPerPage).toArray().then(images => images);
+        let categories = db.collection('Categories').find().toArray().then(categories => categories);
+        Promise.all([images,categories, numberOfPages]).then(data => {
+            return res.render('index', {
+                images : images,
+                categories : categories,
+                numberOfPages : numberOfPages
             });
         });
     });
@@ -89,12 +76,10 @@ app.get('/page/:number', (req, res) => {
 app.get('/search/phrase', (req, res) => {
     let query = req.query;
     let phrase = query.phrase;
-    collectionImages.find({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}})
-    .then(images => {
-        console.log(images);
-        return images
-    }).then(images => {
-        collectionCategories.find().then(categories => {
+    DataBase.getConnection().then(db => {
+        let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}}).toArray().then(images => images);
+        let categories = db.collection('Categories').find().toArray().then(categories => categories);
+        Promise.all([images, categories]).then(data => {
             return res.render('index', {
                 images : images,
                 categories : categories
@@ -114,51 +99,55 @@ app.get('/admin/images', (req,res) => {
     } else {
         message = false;
     }
-    let images = collectionImages.find();
-    images.then((images) => {
-        return res.render('admin/admin-images', {
-            images : images,
-            message : message
+
+    DataBase.getConnection().then(db => {
+        db.collection('Images').find().toArray().then(images => {
+            return res.render('admin/admin-images', {
+                images : images,
+                message : message
+            });
         });
-    }).catch((err) => {
-        console.log(err);
     });
 });
 
 app.get('/admin/remove-image', (req,res) => {
     let fileName = req.query;
-    collectionImages.remove(fileName).then(result => {
-        let message = {
-            success: true,
-            message: 'Imagem removida com sucesso.' 
-        }
-        rename(
-            path.normalize('./public/images/original-images/' + fileName.fileName), 
-            path.normalize('./public/images/deleted-images/' + fileName.fileName), 
-            (err) => {
-            if(err) throw err;
-            console.log('Imagem movida com sucesso');
+    DataBase.getConnection().then(db => {
+        db.collection('Images').deleteOne(fileName).then(result => {
+            rename(
+                path.normalize('./public/images/original-images/' + fileName.fileName), 
+                path.normalize('./public/images/deleted-images/' + fileName.fileName), 
+                (err) => {
+                if(err) throw err;
+                console.log('Imagem movida com sucesso');
+            });
+        }).then(() => {
+            db.collection('Phrases').updateOne(fileName, {$set: {fileName: ""} });
+            let message = {
+                success: true,
+                message: 'Imagem removida com sucesso.' 
+            }
+            return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
+        }).catch(err => {
+            let message = {
+                success: false,
+                message: "Algo deu errado."
+            }
+            return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
         });
-        return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
-    }).then(()=>{
-        collectionPhrase.updateOne(fileName, {$set: {fileName: ""} });
-    }).catch(err =>{
-        let message = {
-            success: false,
-            message: "Algo deu errado."
-        }
-        return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
     });
 });
 
 app.get('/admin/upload-images', (req, res) => {
     let message = req.query;
-    collectionCategories.find().then(categories => {
-        return res.render('admin/upload-images', {
-            message : message,
-            categories : categories
+    DataBase.getConnection().then(db => {
+        db.collection('Categories').find().toArray().then(categories => {
+            return res.render('admin/upload-images', {
+                message : message,
+                categories : categories
+            });
         });
-    })
+    });
 });
 
 app.post('/images', upload.single('image'), (req, res) => {

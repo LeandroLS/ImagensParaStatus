@@ -1,15 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
-
-// Connection URL
 const url = 'mongodb://localhost:27017';
-
-// Database Name
 const dbName = 'EscreverNaImagem';
-
-// Create a new MongoClient
-const client = new MongoClient(url);
-// Use connect method to connect to the Server
-
+const client = new MongoClient(url, { useNewUrlParser: true });
 
 module.exports = {
     async connectDB(){
@@ -21,10 +13,11 @@ module.exports = {
             throw error
         }
     },
-    
-    async getDB(){
+    closeConnection(){
+        client.close();
+    },
+    async getConnection(){
         let db = await this.connectDB();
         return db;
     }
-    
 };
