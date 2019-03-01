@@ -33,7 +33,7 @@ function checkIfCategoryExists(req, res, next) {
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let category = req.params.category;
     let header = "Imagens.";
-    let imagesPerPage = 1;
+    let imagesPerPage = 2;
     var filter = {};
     if(category) {
         filter = { category : category };
@@ -41,7 +41,7 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
     }
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments().then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
-    let images = db.collection('Images').find({}).limit(imagesPerPage).toArray().then(images => images);
+    let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
 
     Promise.all([numberOfPages, images, categories]).then(data => {
