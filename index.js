@@ -1,9 +1,9 @@
+"use strict";
 const app = require('./config/express');
 const upload = require('./config/upload');
 const { rename, unlink   } = require('fs');
 const DB = require('./database/DB');
 const path = require('path');
-const collectionImages2 = new DB('Images');
 const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
 const collectionCategories = new DB('Categories');
@@ -27,27 +27,51 @@ function checkIfCategoryExists(req, res, next) {
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let category = req.params.category;
     let header = "Imagens.";
+    let imagesPerPage = 1;
     var filter = {};
     if(category) {
         filter = { category : category };
         header = `Imagens de ${category}.`;  
     }
-    collectionImages.find(filter).then(images => {
+    let numberOfPages = collectionImages.count().then(qtdImages => {
+        return Math.floor(qtdImages / imagesPerPage); 
+    });
+    let images = collectionImages.find(filter, imagesPerPage).then(images => {
         return images;
-    }).then(images => {
-        collectionCategories.find().then(categories => {
-            return res.render('index', {
-                images : images,
-                categories : categories,
-                header : header
-            });
+    });
+    let categories = collectionCategories.find().then(categories => {
+        return categories;
+    });
+    Promise.all([numberOfPages, images, categories]).then(data => {
+        return res.render('index', {
+            images : data[1],
+            categories : data[2],
+            header : header,
+            numberOfPages : data[0]
         });
     });
 });
 
 app.get('/page/:number', (req, res) => {
-    collectionImages2.connectDB().then(db =>{
-        db.collection('Images').find({}).toArray().then(a => console.log(a));
+    if(req.params.number){
+        var pageNumber = req.params.number;
+    } else {
+        pageNumber = 0;
+    }
+    let imagesPerPage = 1;
+    collectionImages.count().then(qtdImages => {
+        let numberOfPages = Math.floor(qtdImages / imagesPerPage);
+        collectionImages.find({ 'id' : { $gte: parseInt(pageNumber) } }, imagesPerPage)
+        .then(images => {
+            collectionCategories.find()
+            .then(categories => {
+                return res.render('index', {
+                    images : images,
+                    categories : categories,
+                    numberOfPages : numberOfPages
+                });
+            });
+        });
     });
 });
 
@@ -161,17 +185,21 @@ app.post('/images', upload.single('image'), (req, res) => {
             }
         });
     }).then(() => {
-        collectionImages.insert({
-            originalName: originalName, 
-            fileName: fileName,
-            category: category,
-            phrase: phrase
+        collectionImages.count().then(qtdImages => {
+            collectionImages.insert({
+                originalName: originalName, 
+                fileName: fileName,
+                category: category,
+                phrase: phrase,
+                id: qtdImages+1
+            });
+            let result = {
+                success: true,
+                message: "Imagem inserida com sucesso."
+            }
+            return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message);
         });
-        let result = {
-            success: true,
-            message: "Imagem inserida com sucesso."
-        }
-        return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message);
+       
     }).catch(erro => {
         unlink(path.normalize('./public/images/original-images/' + fileName), (err) => {
             if(err) console.log(err);
