@@ -31,6 +31,13 @@
                                 p(class="card-text" id="frase") #{image.phrase}
                                 button(class="btn btn-primary", id="copyToClipBoard", data-clipboard-target="#frase") Copiar
                                 <p class="card-text"> Categoria: #{image.category} </p>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            - for(var i = 1; i < numberOfPages; i++) {
+                                <li class="page-item"><a class="page-link" href="/page/#{i}">1</a></li>
+                            - }
+                        </ul>
+                    </nav>
                 .col-md-4
                     <div class="panel panel-primary">
                         <div class="panel-heading">
@@ -41,11 +48,7 @@
                                 for category in categories
                                     a(href=`http://localhost:9090/${category.category}`, class="list-group-item") #{category.category} 
                             </ul>
-                        p !{numberOfPages} aquil
                     </div>
-                    - for(var i = 0; i < numberOfPages; i++) {
-                        p aaaaa
-                    - }
     else
         div.alert.alert-warning Nenhuma imagem encontrada.
 </body>

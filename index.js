@@ -3,6 +3,7 @@ const upload = require('./config/upload');
 const { rename, unlink   } = require('fs');
 const DB = require('./database/DB');
 const path = require('path');
+const collectionImages2 = new DB('Images');
 const collectionImages = new DB('Images');
 const collectionPhrase = new DB('Phrases');
 const collectionCategories = new DB('Categories');
@@ -13,7 +14,7 @@ function checkIfCategoryExists(req, res, next) {
         return next();
     }
 
-    collectionCategories.list().then(categories => {
+    collectionCategories.find().then(categories => {
         let categoriesFilter = categories.filter(value => value.category == category);
         if(categoriesFilter.length >= 1){
             return next();
@@ -31,10 +32,10 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
         filter = { category : category };
         header = `Imagens de ${category}.`;  
     }
-    collectionImages.list(filter).then(images => {
+    collectionImages.find(filter).then(images => {
         return images;
     }).then(images => {
-        collectionCategories.list().then(categories => {
+        collectionCategories.find().then(categories => {
             return res.render('index', {
                 images : images,
                 categories : categories,
@@ -45,33 +46,20 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
 });
 
 app.get('/page/:number', (req, res) => {
-    let imagesPerPage = 1;
-    collectionImages.count().then(imagesQtd => {
-        let numberOfPages = imagesQtd / imagesPerPage;
-        collectionImages.list({}, imagesPerPage)
-        .then(images => {
-            collectionCategories.list().then(categories => {
-                console.log(numberOfPages);
-                return res.render('index', {
-                    images : images,
-                    categories : categories,
-                    numberOfPages : numberOfPages
-                });
-            });
-        });
+    collectionImages2.connectDB().then(db =>{
+        db.collection('Images').find({}).toArray().then(a => console.log(a));
     });
-   
 });
 
 app.get('/search/phrase', (req, res) => {
     let query = req.query;
     let phrase = query.phrase;
-    collectionImages.list({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}})
+    collectionImages.find({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}})
     .then(images => {
         console.log(images);
         return images
     }).then(images => {
-        collectionCategories.list().then(categories => {
+        collectionCategories.find().then(categories => {
             return res.render('index', {
                 images : images,
                 categories : categories
@@ -91,7 +79,7 @@ app.get('/admin/images', (req,res) => {
     } else {
         message = false;
     }
-    let images = collectionImages.list();
+    let images = collectionImages.find();
     images.then((images) => {
         return res.render('admin/admin-images', {
             images : images,
@@ -130,7 +118,7 @@ app.get('/admin/remove-image', (req,res) => {
 
 app.get('/admin/upload-images', (req, res) => {
     let message = req.query;
-    collectionCategories.list().then(categories => {
+    collectionCategories.find().then(categories => {
         return res.render('admin/upload-images', {
             message : message,
             categories : categories
@@ -149,7 +137,7 @@ app.post('/images', upload.single('image'), (req, res) => {
         category = categoryExistent;
     }
 
-    collectionPhrase.list({ phrase : phrase }).then(phraseResult => {
+    collectionPhrase.find({ phrase : phrase }).then(phraseResult => {
         if(phraseResult.length == 0){
             collectionPhrase.insert({
                 phrase: phrase,
@@ -164,7 +152,7 @@ app.post('/images', upload.single('image'), (req, res) => {
             return Promise.reject(result);
         }
     }).then(() => {
-        collectionCategories.list({category : category})
+        collectionCategories.find({category : category})
         .then(categoryResult => {
             if(categoryResult.length == 0){
                 collectionCategories.insert({

@@ -26,7 +26,7 @@ module.exports = class DB {
         }
     }
 
-    async list(query = {}, limit = 999){
+    async find(query = {}, limit = 999){
         try {
             let db = await this.connectDB();
             let result = await db.collection(this.collection).find(query).limit(limit).toArray();

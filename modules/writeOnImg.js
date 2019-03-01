@@ -5,8 +5,8 @@ const appPath = require('./config/path');
 const path = require('path');
 app.get('/edit-image/:fileName', (req, res) => {
     let query = { 'fileName' : req.params.fileName };
-    let images = imageDB.list(query);
-    let fonts = fontsDB.list({});
+    let images = imageDB.find(query);
+    let fonts = fontsDB.find({});
     Promise.all([images, fonts]).then((data)=>{
         return res.render('edit-image', { 
             image : data[0][0],
