@@ -8,6 +8,7 @@ const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 const dbName = 'EscreverNaImagem';
 const client = new MongoClient(url, { useNewUrlParser: true });
+app.locals.imagesPerPage = 2;
 client.connect().then(db => {
     app.locals.db = client.db(dbName);
 }).catch(err => {
@@ -33,7 +34,7 @@ function checkIfCategoryExists(req, res, next) {
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let category = req.params.category;
     let header = "Imagens.";
-    let imagesPerPage = 2;
+    let imagesPerPage = app.locals.imagesPerPage;
     var filter = {};
     if(category) {
         filter = { category : category };
@@ -62,11 +63,10 @@ app.get('/page/:number/:category?', (req, res) => {
             id : { $gte : parseInt(pageNumber) }
         };
     } else {
-        var pageNumber = 0;
         var filter = {};
     }
 
-    let imagesPerPage = 1;
+    let imagesPerPage = app.locals.imagesPerPage;
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments().then(qtdImages => Math.floor(qtdImages / imagesPerPage));
     let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
