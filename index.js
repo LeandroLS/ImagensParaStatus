@@ -54,22 +54,28 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
     });
 });
 
-app.get('/page/:number', (req, res) => {
+app.get('/page/:number/:category?', (req, res) => {
+
     if(req.params.number){
         var pageNumber = req.params.number;
+        var filter = {
+            id : { $gte : parseInt(pageNumber) }
+        };
     } else {
-        pageNumber = 0;
+        var pageNumber = 0;
+        var filter = {};
     }
+
     let imagesPerPage = 1;
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments().then(qtdImages => Math.floor(qtdImages / imagesPerPage));
-    let images = db.collection('Images').find({ 'id' : { $gte: parseInt(pageNumber) } }).limit(imagesPerPage).toArray().then(images => images);
+    let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
-    Promise.all([images,categories, numberOfPages]).then(data => {
+    Promise.all([images, categories, numberOfPages]).then(data => {
         return res.render('index', {
-            images : images,
-            categories : categories,
-            numberOfPages : numberOfPages
+            images : data[0],
+            categories : data[1],
+            numberOfPages : data[2]
         });
     });
 });
