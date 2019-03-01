@@ -2,29 +2,32 @@
 const app = require('./config/express');
 const upload = require('./config/upload');
 const { rename, unlink   } = require('fs');
-const DB = require('./database/DB');
-const DBConnection = require('./database/DataBase');
-const DataBase = DBConnection;
 const path = require('path');
-const collectionImages = new DB('Images');
-const collectionPhrase = new DB('Phrases');
-const collectionCategories = new DB('Categories');
+
+const MongoClient = require('mongodb').MongoClient;
+const url = 'mongodb://localhost:27017';
+const dbName = 'EscreverNaImagem';
+const client = new MongoClient(url, { useNewUrlParser: true });
+client.connect().then(db => {
+    app.locals.db = client.db(dbName);
+}).catch(err => {
+    console.error('Erro pra se conectar no banco.', err);
+})
 
 function checkIfCategoryExists(req, res, next) {
     let category = req.params.category;
     if(typeof category === 'undefined'){
         return next();
     }
-    DataBase.getConnection().then(db => {
-        db.collection('Categories').find().toArray().then(categories => {
-            let categoriesFilter = categories.filter(value => value.category == category);
-            if(categoriesFilter.length >= 1){
-                return next();
-            } else {
-                return res.send('Página não existe.');
-            }
-        });
-    })
+    let db = app.locals.db;
+    db.collection('Categories').find().toArray().then(categories => {
+        let categoriesFilter = categories.filter(value => value.category == category);
+        if(categoriesFilter.length >= 1){
+            return next();
+        } else {
+            return res.send('Página não existe.');
+        }
+    });
 }
 
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
@@ -36,18 +39,17 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
         filter = { category : category };
         header = `Imagens de ${category}.`;  
     }
-    DataBase.getConnection().then(db => {
-        let numberOfPages = db.collection('Images').countDocuments().then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
-        let images = db.collection('Images').find({}).limit(imagesPerPage).toArray().then(images => images);
-        let categories = db.collection('Categories').find().toArray().then(categories => categories);
+    let db = app.locals.db;
+    let numberOfPages = db.collection('Images').countDocuments().then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
+    let images = db.collection('Images').find({}).limit(imagesPerPage).toArray().then(images => images);
+    let categories = db.collection('Categories').find().toArray().then(categories => categories);
 
-        Promise.all([numberOfPages, images, categories]).then(data => {
-            return res.render('index', {
-                images : data[1],
-                categories : data[2],
-                header : header,
-                numberOfPages : data[0]
-            });
+    Promise.all([numberOfPages, images, categories]).then(data => {
+        return res.render('index', {
+            images : data[1],
+            categories : data[2],
+            header : header,
+            numberOfPages : data[0]
         });
     });
 });
@@ -59,16 +61,15 @@ app.get('/page/:number', (req, res) => {
         pageNumber = 0;
     }
     let imagesPerPage = 1;
-    DataBase.getConnection().then(db => {
-        let numberOfPages = db.collection('Images').countDocuments().then(qtdImages => Math.floor(qtdImages / imagesPerPage));
-        let images = db.collection('Images').find({ 'id' : { $gte: parseInt(pageNumber) } }).limit(imagesPerPage).toArray().then(images => images);
-        let categories = db.collection('Categories').find().toArray().then(categories => categories);
-        Promise.all([images,categories, numberOfPages]).then(data => {
-            return res.render('index', {
-                images : images,
-                categories : categories,
-                numberOfPages : numberOfPages
-            });
+    let db = app.locals.db;
+    let numberOfPages = db.collection('Images').countDocuments().then(qtdImages => Math.floor(qtdImages / imagesPerPage));
+    let images = db.collection('Images').find({ 'id' : { $gte: parseInt(pageNumber) } }).limit(imagesPerPage).toArray().then(images => images);
+    let categories = db.collection('Categories').find().toArray().then(categories => categories);
+    Promise.all([images,categories, numberOfPages]).then(data => {
+        return res.render('index', {
+            images : images,
+            categories : categories,
+            numberOfPages : numberOfPages
         });
     });
 });
@@ -76,14 +77,13 @@ app.get('/page/:number', (req, res) => {
 app.get('/search/phrase', (req, res) => {
     let query = req.query;
     let phrase = query.phrase;
-    DataBase.getConnection().then(db => {
-        let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}}).toArray().then(images => images);
-        let categories = db.collection('Categories').find().toArray().then(categories => categories);
-        Promise.all([images, categories]).then(data => {
-            return res.render('index', {
-                images : images,
-                categories : categories
-            });
+    let db = app.locals.db;
+    let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}}).toArray().then(images => images);
+    let categories = db.collection('Categories').find().toArray().then(categories => categories);
+    Promise.all([images, categories]).then(data => {
+        return res.render('index', {
+            images : images,
+            categories : categories
         });
     });
 });
@@ -100,52 +100,50 @@ app.get('/admin/images', (req,res) => {
         message = false;
     }
 
-    DataBase.getConnection().then(db => {
-        db.collection('Images').find().toArray().then(images => {
-            return res.render('admin/admin-images', {
-                images : images,
-                message : message
-            });
+    let db = app.locals.db;
+    db.collection('Images').find().toArray().then(images => {
+        return res.render('admin/admin-images', {
+            images : images,
+            message : message
         });
     });
 });
 
 app.get('/admin/remove-image', (req,res) => {
     let fileName = req.query;
-    DataBase.getConnection().then(db => {
-        db.collection('Images').deleteOne(fileName).then(result => {
-            rename(
-                path.normalize('./public/images/original-images/' + fileName.fileName), 
-                path.normalize('./public/images/deleted-images/' + fileName.fileName), 
-                (err) => {
-                if(err) throw err;
-                console.log('Imagem movida com sucesso');
-            });
-        }).then(() => {
-            db.collection('Phrases').updateOne(fileName, {$set: {fileName: ""} });
-            let message = {
-                success: true,
-                message: 'Imagem removida com sucesso.' 
-            }
-            return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
-        }).catch(err => {
-            let message = {
-                success: false,
-                message: "Algo deu errado."
-            }
-            return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
+    let db = app.locals.db;
+    db.collection('Images').deleteOne(fileName).then(result => {
+        rename(
+            path.normalize('./public/images/original-images/' + fileName.fileName), 
+            path.normalize('./public/images/deleted-images/' + fileName.fileName), 
+            (err) => {
+            if(err) throw err;
+            console.log('Imagem movida com sucesso');
         });
+    }).then(() => {
+        db.collection('Phrases').updateOne(fileName, {$set: {fileName: ""} });
+        let message = {
+            success: true,
+            message: 'Imagem removida com sucesso.' 
+        }
+        return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
+    }).catch(err => {
+        let message = {
+            success: false,
+            message: "Algo deu errado."
+        }
+        return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
     });
+   
 });
 
 app.get('/admin/upload-images', (req, res) => {
     let message = req.query;
-    DataBase.getConnection().then(db => {
-        db.collection('Categories').find().toArray().then(categories => {
-            return res.render('admin/upload-images', {
-                message : message,
-                categories : categories
-            });
+    let db = app.locals.db;
+    db.collection('Categories').find().toArray().then(categories => {
+        return res.render('admin/upload-images', {
+            message : message,
+            categories : categories
         });
     });
 });
@@ -156,14 +154,13 @@ app.post('/images', upload.single('image'), (req, res) => {
     let phrase = req.body.phrase;
     let category = req.body.category;
     let categoryExistent = req.body.existentCategory;
-
+    let db = app.locals.db;
     if(categoryExistent != ""){
         category = categoryExistent;
     }
-
-    collectionPhrase.find({ phrase : phrase }).then(phraseResult => {
+    db.collection('Phrases').find({ phrase : phrase }).toArray().then(phraseResult => {
         if(phraseResult.length == 0){
-            collectionPhrase.insert({
+            db.collection('Phrases').insert({
                 phrase: phrase,
                 category: category,
                 fileName: fileName
@@ -176,17 +173,16 @@ app.post('/images', upload.single('image'), (req, res) => {
             return Promise.reject(result);
         }
     }).then(() => {
-        collectionCategories.find({category : category})
-        .then(categoryResult => {
+        db.collection('Categories').find({category : category}).toArray().then(categoryResult => {
             if(categoryResult.length == 0){
-                collectionCategories.insert({
+                db.collection('Categories').insert({
                     category : category
                 })
             }
-        });
+        })
     }).then(() => {
-        collectionImages.count().then(qtdImages => {
-            collectionImages.insert({
+        db.collection('Images').countDocuments().then(qtdImages => {
+            db.collection('Images').insert({
                 originalName: originalName, 
                 fileName: fileName,
                 category: category,
@@ -198,8 +194,7 @@ app.post('/images', upload.single('image'), (req, res) => {
                 message: "Imagem inserida com sucesso."
             }
             return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message);
-        });
-       
+        })
     }).catch(erro => {
         unlink(path.normalize('./public/images/original-images/' + fileName), (err) => {
             if(err) console.log(err);
