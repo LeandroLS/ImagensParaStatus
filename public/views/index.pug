@@ -33,9 +33,12 @@
                                 <p class="card-text"> Categoria: #{image.category} </p>
                     <nav aria-label="Page navigation example">
                         <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="/page/1">1</a></li>
+                            - var categoryPageRouting = '';
+                            if(categoryPagination != undefined)
+                                - var categoryPageRouting = '/' + categoryPagination;
                             - for(var i = 1; i <= numberOfPages; i++) {
-                                <li class="page-item"><a class="page-link" href="/page/#{i+1}">#{i+1}</a></li>
+                                li(class="page-item") 
+                                    a(class="page-link" href=`${categoryPageRouting}/page/${i}`) #{i}
                             - }
                         </ul>
                     </nav>
@@ -50,7 +53,6 @@
                                     a(href=`http://localhost:9090/${category.category}`, class="list-group-item") #{category.category} 
                             </ul>
                     </div>
-            h1 #{lastImgId}
     else
         div.alert.alert-warning Nenhuma imagem encontrada.
 </body>

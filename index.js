@@ -6,7 +6,7 @@ const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 const dbName = 'EscreverNaImagem';
 const client = new MongoClient(url, { useNewUrlParser: true });
-app.locals.imagesPerPage = 3;
+app.locals.imagesPerPage = 1;
 client.connect().then(db => {
     app.locals.db = client.db(dbName);
 }).catch(err => {
@@ -41,41 +41,52 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
 
     let imagesPerPage = app.locals.imagesPerPage;
     let db = app.locals.db;
-    let numberOfPages = db.collection('Images').countDocuments().then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
+    let numberOfPages = db.collection('Images').countDocuments(filter).then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
     let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
 
     Promise.all([numberOfPages, images, categories]).then(data => {
-        let imgsArrLenght = data[1].length;
         return res.render('index', {
+            numberOfPages : data[0],
             images : data[1],
             categories : data[2],
-            header : header,
-            lastImgId : data[1][imgsArrLenght-1].id,
-            numberOfPages : data[0]
+            categoryPagination : category,
+            header : header
         });
     });
 });
 
-app.get('/page/:number', (req, res) => {
+app.get('/:category?/page/:number', (req, res) => {
     let imagesPerPage = app.locals.imagesPerPage;
+    
     if(req.params.number){
         var pageNumber = req.params.number;
-        var filter = {
-            id : { $gte : parseInt(pageNumber) }
+        var filterImages = {
+            id : { $gt : parseInt((pageNumber * imagesPerPage) - imagesPerPage) }
         };
+        if(req.params.category){
+            var category = req.params.category;
+            var filterNumberOfPages = { category : category };
+            filterImages.category = category;
+        } else {
+            var filterNumberOfPages = {};
+        }
     } else {
-        var filter = {};
+        var filterImages = {};
     }
+
+  
+
     let db = app.locals.db;
-    let numberOfPages = db.collection('Images').countDocuments().then(qtdImages => Math.floor(qtdImages / imagesPerPage));
-    let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
+    let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => Math.floor(qtdImages / imagesPerPage));
+    let images = db.collection('Images').find(filterImages).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([images, categories, numberOfPages]).then(data => {
         return res.render('index', {
             images : data[0],
             categories : data[1],
-            numberOfPages : data[2]
+            numberOfPages : data[2],
+            categoryPagination : category
         });
     });
 });
