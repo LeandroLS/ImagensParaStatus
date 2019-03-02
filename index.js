@@ -1,14 +1,12 @@
-"use strict";
 const app = require('./config/express');
 const upload = require('./config/upload');
-const { rename, unlink   } = require('fs');
+const { rename, unlink } = require('fs');
 const path = require('path');
-
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 const dbName = 'EscreverNaImagem';
 const client = new MongoClient(url, { useNewUrlParser: true });
-app.locals.imagesPerPage = 2;
+app.locals.imagesPerPage = 3;
 client.connect().then(db => {
     app.locals.db = client.db(dbName);
 }).catch(err => {
@@ -34,29 +32,33 @@ function checkIfCategoryExists(req, res, next) {
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let category = req.params.category;
     let header = "Imagens.";
-    let imagesPerPage = app.locals.imagesPerPage;
     var filter = {};
+
     if(category) {
         filter = { category : category };
         header = `Imagens de ${category}.`;  
     }
+
+    let imagesPerPage = app.locals.imagesPerPage;
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments().then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
     let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
 
     Promise.all([numberOfPages, images, categories]).then(data => {
+        let imgsArrLenght = data[1].length;
         return res.render('index', {
             images : data[1],
             categories : data[2],
             header : header,
+            lastImgId : data[1][imgsArrLenght-1].id,
             numberOfPages : data[0]
         });
     });
 });
 
-app.get('/page/:number/:category?', (req, res) => {
-
+app.get('/page/:number', (req, res) => {
+    let imagesPerPage = app.locals.imagesPerPage;
     if(req.params.number){
         var pageNumber = req.params.number;
         var filter = {
@@ -65,8 +67,6 @@ app.get('/page/:number/:category?', (req, res) => {
     } else {
         var filter = {};
     }
-
-    let imagesPerPage = app.locals.imagesPerPage;
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments().then(qtdImages => Math.floor(qtdImages / imagesPerPage));
     let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
@@ -166,7 +166,7 @@ app.post('/images', upload.single('image'), (req, res) => {
     }
     db.collection('Phrases').find({ phrase : phrase }).toArray().then(phraseResult => {
         if(phraseResult.length == 0){
-            db.collection('Phrases').insert({
+            db.collection('Phrases').insertOne({
                 phrase: phrase,
                 category: category,
                 fileName: fileName
@@ -181,14 +181,14 @@ app.post('/images', upload.single('image'), (req, res) => {
     }).then(() => {
         db.collection('Categories').find({category : category}).toArray().then(categoryResult => {
             if(categoryResult.length == 0){
-                db.collection('Categories').insert({
+                db.collection('Categories').insertOne({
                     category : category
                 })
             }
         })
     }).then(() => {
         db.collection('Images').countDocuments().then(qtdImages => {
-            db.collection('Images').insert({
+            db.collection('Images').insertOne({
                 originalName: originalName, 
                 fileName: fileName,
                 category: category,
