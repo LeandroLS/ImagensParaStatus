@@ -11,11 +11,13 @@ html(lang="pt-br")
             include ../layouts/header.pug
         .container
             h1 Upload de Imagens
-            if(message.success == 'true')
-                div.alert.alert-success #{message.message}
-            else if (message.success == 'false')
-                div.alert.alert-danger #{message.message}
+            if(message != 'undefined')
+                if(message.success == 'true')
+                    div.alert.alert-success #{message.message}
+                else if (message.success == 'false')
+                    div.alert.alert-danger #{message.message}
             form(action="/images", method="post", enctype="multipart/form-data")
+                input(type="hidden", name="token", value=`${token}`)
                 .form-group
                     label(for="image") Upload de Imagem
                     input(type="file", name="image", class="form-control-file", required)

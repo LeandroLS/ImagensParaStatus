@@ -49,7 +49,7 @@ app.post('/admin/auth', (req, res) => {
             message : { success: 'false', message : "Login falhou" }
         });
     }
-    let token = jwt.sign({ id : 123}, auth.secret, { expiresIn: 30000 });
+    let token = jwt.sign({ user : auth.user}, auth.secret, { expiresIn: 30000 });
     return res.render('admin/dashboard', {
         message : { success: 'true', message : "Logado com sucesso." },
         token : token
@@ -182,29 +182,31 @@ app.get('/admin/remove-image', (req,res) => {
 });
 
 app.get('/admin/upload-images', (req, res) => {
-    let message = req.query;
+    let { message, success, token } = req.query;
+    message = { success : success, message: message };
     let db = app.locals.db;
     db.collection('Categories').find().toArray().then(categories => {
         return res.render('admin/upload-images', {
             message : message,
-            categories : categories
+            categories : categories,
+            token : token
         });
     });
 });
 
 app.post('/images', upload.single('image'), (req, res) => {
-    let { originalName, fileName } = req.file;
-    let { category, categoryExistent, phrase } = req.body;
+    let { originalname, filename} = req.file;
+    let { category, existentCategory, phrase, token } = req.body;
     let db = app.locals.db;
-    if(categoryExistent != ''){
-        category = categoryExistent;
+    if(existentCategory != ''){
+        category = existentCategory;
     }
     db.collection('Phrases').find({ phrase : phrase }).toArray().then(phraseResult => {
         if(phraseResult.length == 0){
             db.collection('Phrases').insertOne({
                 phrase: phrase,
                 category: category,
-                fileName: fileName
+                fileName: filename
             });
         } else {
             let result = {
@@ -223,9 +225,10 @@ app.post('/images', upload.single('image'), (req, res) => {
         });
     }).then(() => {
         db.collection('Images').countDocuments().then(qtdImages => {
+
             db.collection('Images').insertOne({
-                originalName: originalName, 
-                fileName: fileName,
+                originalName: originalname, 
+                fileName: filename,
                 category: category,
                 phrase: phrase,
                 id: qtdImages+1
@@ -234,14 +237,14 @@ app.post('/images', upload.single('image'), (req, res) => {
                 success: true,
                 message: 'Imagem inserida com sucesso.'
             };
-            return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message);
+            return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message + '&token=' + token);
         });
     }).catch(erro => {
-        unlink(path.normalize('./public/images/original-images/' + fileName), (err) => {
+        unlink(path.normalize('./public/images/original-images/' + filename), (err) => {
             if(err) console.log(err);
             console.log('Arquivo removido');
         });
-        return res.redirect('admin/upload-images?success=false&message=' + erro.message);
+        return res.redirect('admin/upload-images?success=false&message=' + erro.message + '&token=' + token);
     });
 });
 
