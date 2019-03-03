@@ -5,10 +5,12 @@ const path = require('path');
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 const dbName = 'EscreverNaImagem';
-const client = new MongoClient(url, { useNewUrlParser: true });
+const jwt = require('jsonwebtoken');
+const auth = require('./config/auth.json');
+const mongoClient = new MongoClient(url, { useNewUrlParser: true });
 app.locals.imagesPerPage = 1;
-client.connect().then(db => {
-    app.locals.db = client.db(dbName);
+mongoClient.connect().then(db => {
+    app.locals.db = mongoClient.db(dbName);
 }).catch(err => {
     console.error('Erro pra se conectar no banco.', err);
 });
@@ -29,8 +31,13 @@ function checkIfCategoryExists(req, res, next) {
     });
 }
 
-app.post('/teste/teste', (req, res) => {
-    return res.status(200).send({ ok : ok });
+app.post('/admin/login', (req, res) => {
+    let token = jwt.sign({ id : 123}, auth.secret, { expiresIn: 30000 });
+    jwt.verify(token, auth.secret, (err, decoded) =>{
+        if (err) console.error(err);
+        return decoded;
+    });
+    // return res.status(200).send({ token });
 });
 
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
@@ -99,8 +106,8 @@ app.get('/search/phrase', (req, res) => {
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([images, categories]).then(data => {
         return res.render('index', {
-            images : images,
-            categories : categories
+            images : data[0],
+            categories : data[1]
         });
     });
 });
