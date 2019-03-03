@@ -14,7 +14,7 @@ client.connect().then(db => {
 });
 
 function checkIfCategoryExists(req, res, next) {
-    let category = req.params.category;
+    let  { category } = req.params;
     if(typeof category === 'undefined'){
         return next();
     }
@@ -29,8 +29,12 @@ function checkIfCategoryExists(req, res, next) {
     });
 }
 
+app.post('/teste/teste', (req, res) => {
+    return res.status(200).send({ ok : ok });
+});
+
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
-    let category = req.params.category;
+    let { category } = req.params;
     let header = 'Imagens.';
     var filter = {};
 
@@ -89,8 +93,7 @@ app.get('/:category?/page/:number', (req, res) => {
 });
 
 app.get('/search/phrase', (req, res) => {
-    let query = req.query;
-    let phrase = query.phrase;
+    let { phrase } = req.query;
     let db = app.locals.db;
     let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
@@ -163,11 +166,8 @@ app.get('/admin/upload-images', (req, res) => {
 });
 
 app.post('/images', upload.single('image'), (req, res) => {
-    let originalName = req.file.originalname;
-    let fileName =  req.file.filename;
-    let phrase = req.body.phrase;
-    let category = req.body.category;
-    let categoryExistent = req.body.existentCategory;
+    let { originalName, fileName } = req.file;
+    let { category, categoryExistent, phrase } = req.body;
     let db = app.locals.db;
     if(categoryExistent != ''){
         category = categoryExistent;
