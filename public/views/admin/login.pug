@@ -1,0 +1,21 @@
+html(lang="pt-br")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Imagem Para Status
+        include ../layouts/default-css-and-js.pug
+    body
+        header
+            include ../layouts/header.pug
+        .container
+            form(method="post", action="/admin/auth")
+                if(message && message.success == 'false')
+                    div.alert.alert-danger #{message.message}
+                .form-group
+                    label(for='user') Usuário
+                    input#user.form-control(type='text', name='user', placeholder='Informe o usuário', required="required")
+                .form-group
+                    label(for='password') Password
+                    input#password.form-control(type='password', name="password", placeholder='Password', required="required")
+                button.btn.btn-primary(type='submit') Submit

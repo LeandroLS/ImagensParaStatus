@@ -31,13 +31,29 @@ function checkIfCategoryExists(req, res, next) {
     });
 }
 
-app.post('/admin/login', (req, res) => {
-    let token = jwt.sign({ id : 123}, auth.secret, { expiresIn: 30000 });
+app.use('/admin', validToken);
+
+function validToken(req, res, next){
+    let { token } = req.query;
+    if(req.path == '/login' || req.path == '/auth') return next();
     jwt.verify(token, auth.secret, (err, decoded) =>{
-        if (err) console.error(err);
-        return decoded;
+        if (err) return res.send({ message : 'Token need to be provided' });
+        return next();
     });
-    // return res.status(200).send({ token });
+}
+
+app.post('/admin/auth', (req, res) => {
+    let { user, password } = req.body;
+    if ( user != auth.user || password != auth.password ){
+        return res.render('admin/login', {
+            message : { success: 'false', message : "Login falhou" }
+        });
+    }
+    let token = jwt.sign({ id : 123}, auth.secret, { expiresIn: 30000 });
+    return res.render('admin/dashboard', {
+        message : { success: 'true', message : "Logado com sucesso." },
+        token : token
+    });
 });
 
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
@@ -113,7 +129,11 @@ app.get('/search/phrase', (req, res) => {
 });
 
 app.get('/admin/dashboard', (req,res) => {
-    return res.render('admin/admin');
+    return res.render('admin/dashboard');
+});
+
+app.get('/admin/login', (req, res) => {
+    return res.render('admin/login');
 });
 
 app.get('/admin/images', (req,res) => {
@@ -126,7 +146,7 @@ app.get('/admin/images', (req,res) => {
 
     let db = app.locals.db;
     db.collection('Images').find().toArray().then(images => {
-        return res.render('admin/admin-images', {
+        return res.render('admin/images', {
             images : images,
             message : message
         });
