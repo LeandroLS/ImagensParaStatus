@@ -11,7 +11,7 @@ client.connect().then(db => {
     app.locals.db = client.db(dbName);
 }).catch(err => {
     console.error('Erro pra se conectar no banco.', err);
-})
+});
 
 function checkIfCategoryExists(req, res, next) {
     let category = req.params.category;
@@ -31,12 +31,12 @@ function checkIfCategoryExists(req, res, next) {
 
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let category = req.params.category;
-    let header = "Imagens.";
+    let header = 'Imagens.';
     var filter = {};
 
     if(category) {
         filter = { category : category };
-        header = `Imagens de ${category}.`;  
+        header = `Imagens de ${category}.`;
     }
 
     let imagesPerPage = app.locals.imagesPerPage;
@@ -74,9 +74,6 @@ app.get('/:category?/page/:number', (req, res) => {
     } else {
         var filterImages = {};
     }
-
-  
-
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => Math.floor(qtdImages / imagesPerPage));
     let images = db.collection('Images').find(filterImages).limit(imagesPerPage).toArray().then(images => images);
@@ -95,7 +92,7 @@ app.get('/search/phrase', (req, res) => {
     let query = req.query;
     let phrase = query.phrase;
     let db = app.locals.db;
-    let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:"i"}}).toArray().then(images => images);
+    let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([images, categories]).then(data => {
         return res.render('index', {
@@ -134,21 +131,21 @@ app.get('/admin/remove-image', (req,res) => {
             path.normalize('./public/images/original-images/' + fileName.fileName), 
             path.normalize('./public/images/deleted-images/' + fileName.fileName), 
             (err) => {
-            if(err) throw err;
-            console.log('Imagem movida com sucesso');
-        });
+                if(err) throw err;
+                console.log('Imagem movida com sucesso');
+            });
     }).then(() => {
-        db.collection('Phrases').updateOne(fileName, {$set: {fileName: ""} });
+        db.collection('Phrases').updateOne(fileName, {$set: {fileName: ''} });
         let message = {
             success: true,
             message: 'Imagem removida com sucesso.' 
-        }
+        };
         return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
     }).catch(err => {
         let message = {
             success: false,
-            message: "Algo deu errado."
-        }
+            message: 'Algo deu errado.'
+        };
         return res.redirect(`/admin/images?success=${message.success}&message=${message.message}`);
     });
    
@@ -172,7 +169,7 @@ app.post('/images', upload.single('image'), (req, res) => {
     let category = req.body.category;
     let categoryExistent = req.body.existentCategory;
     let db = app.locals.db;
-    if(categoryExistent != ""){
+    if(categoryExistent != ''){
         category = categoryExistent;
     }
     db.collection('Phrases').find({ phrase : phrase }).toArray().then(phraseResult => {
@@ -185,8 +182,8 @@ app.post('/images', upload.single('image'), (req, res) => {
         } else {
             let result = {
                 success: false,
-                message: "Frase já existe"
-            }
+                message: 'Frase já existe'
+            };
             return Promise.reject(result);
         }
     }).then(() => {
@@ -194,9 +191,9 @@ app.post('/images', upload.single('image'), (req, res) => {
             if(categoryResult.length == 0){
                 db.collection('Categories').insertOne({
                     category : category
-                })
+                });
             }
-        })
+        });
     }).then(() => {
         db.collection('Images').countDocuments().then(qtdImages => {
             db.collection('Images').insertOne({
@@ -208,15 +205,15 @@ app.post('/images', upload.single('image'), (req, res) => {
             });
             let result = {
                 success: true,
-                message: "Imagem inserida com sucesso."
-            }
+                message: 'Imagem inserida com sucesso.'
+            };
             return res.redirect('admin/upload-images?success=' +  result.success + '&message=' + result.message);
-        })
+        });
     }).catch(erro => {
         unlink(path.normalize('./public/images/original-images/' + fileName), (err) => {
             if(err) console.log(err);
             console.log('Arquivo removido');
-        })
+        });
         return res.redirect('admin/upload-images?success=false&message=' + erro.message);
     });
 });
