@@ -10,12 +10,13 @@ function checkIfCategoryExists(req, res, next) {
         if(categoriesFilter.length >= 1){
             return next();
         } else {
-            return res.send('Página não existe.');
+            return res.render('404');
         }
     });
 }
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let { category } = req.params;
+    let { token } = req.query;
     let header = 'Imagens.';
     var filter = {};
     if(category) {
@@ -33,7 +34,8 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
             images : data[1],
             categories : data[2],
             categoryPagination : category,
-            header : header
+            header : header,
+            token : token
         });
     });
 });
