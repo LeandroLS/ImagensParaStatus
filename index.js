@@ -1,7 +1,7 @@
 const app = require('./config/express');
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
-const dbName = 'EscreverNaImagem';
+const dbName = 'ImagensParaStatus';
 require('./controllers/adminController');
 const mongoClient = new MongoClient(url, { useNewUrlParser: true });
 mongoClient.connect().then(db => {

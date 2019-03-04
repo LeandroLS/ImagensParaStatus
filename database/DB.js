@@ -2,7 +2,7 @@ MongoClient = require('mongodb').MongoClient;
 module.exports = class DB {
     constructor(collection){
         this.url = 'mongodb://localhost:27017';
-        this.dbName = 'EscreverNaImagem';
+        this.dbName = 'ImagensParaStatus';
         this.collection = collection;
         this.client = new MongoClient(this.url, { useNewUrlParser: true });
     }

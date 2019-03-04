@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
-const dbName = 'EscreverNaImagem';
+const dbName = 'ImagensParaStatus';
 const client = new MongoClient(url, { useNewUrlParser: true });
 
 module.exports = {

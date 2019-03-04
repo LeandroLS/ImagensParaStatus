@@ -16,7 +16,7 @@ html(lang="pt-br")
                     div.alert.alert-success #{message.message}
                 else if (message.success == 'false')
                     div.alert.alert-danger #{message.message}
-            form(action="/admin/images", method="post", enctype="multipart/form-data")
+            form(action="/admin/upload-images", method="post", enctype="multipart/form-data")
                 input(type="hidden", name="token", value=`${token}`)
                 .form-group
                     label(for="image") Upload de Imagem

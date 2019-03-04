@@ -10,9 +10,9 @@ html(lang="pt-br")
             include ../layouts/header.pug
         .container
             if(message.success == 'true')
-                p.bg-success #{message.message}
+                p.alert.alert-success #{message.message}
             else if (message.success == 'false')
-                p.bg-danger #{message.message}
+                p.alert.alert-danger #{message.message}
             if(images.length >= 1)
                 .row
                     each image in images
@@ -23,7 +23,7 @@ html(lang="pt-br")
                                     <p class="card-text"> #{image.phrase} </p>
                                     <p class="card-text"> Categoria: #{image.category} </p>
                                 </div>
-                                a(href=`http://localhost:9090/admin/remove-image?fileName=${image.fileName}`, class="btn btn-danger") Remover
+                                a(href=`http://localhost:9090/admin/remove-image?fileName=${image.fileName}&token=${token}`, class="btn btn-danger") Remover
                             </div>
             else
                 div.alert.alert-warning Nenhuma imagem no banco de dados.

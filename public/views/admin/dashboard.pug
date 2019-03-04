@@ -10,11 +10,14 @@ html(lang="pt-br")
         header
             include ../layouts/header.pug
         .container
+            if(message)
+                div.alert.alert-success #{message}
             h1.text-center Dashboard
             .row
                 .col-md-4
-                    a(href=`/admin/images`) Imagens
+                    a(href=`/admin/images?token=${token}`) Imagens
+                .col-md-4
+                    a(href=`/admin/upload-images?token=${token}`) Upload Images
                 .col-md-4
                     a(href="http://") Categorias
-                .col-md-4
-                    a(href=`/admin/upload-images`) Upload Images
+                
