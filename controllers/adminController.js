@@ -36,7 +36,7 @@ app.get('/admin/images', (req,res) => {
         return res.render('admin/images', {
             images : images,
             message : message,
-            token : token
+           token : token
         });
     });
 });
@@ -52,12 +52,13 @@ app.get('/admin/remove-image', (req,res) => {
                 console.log('Imagem movida com sucesso');
             });
     }).then(() => {
-        db.collection('Phrases').updateOne({ fileName : fileName }, {$set: {fileName: ''} });
-        let message = {
-            success: true,
-            message: 'Imagem removida com sucesso.' 
-        };
-        return res.redirect(`/admin/images?success=${message.success}&message=${message.message}&token=${token}`);
+        db.collection('Phrases').deleteOne({ fileName : fileName }).then(result => {
+            let message = {
+                success: true,
+                message: 'Imagem removida com sucesso.' 
+            };
+            return res.redirect(`/admin/images?success=${message.success}&message=${message.message}&token=${token}`);
+        });
     }).catch(err => {
         console.error('Algo deu errado.', err);
         let message = {
@@ -86,7 +87,7 @@ app.post('/admin/auth', (req, res) => {
     if ( user != auth.user || password != auth.password ){
         return res.redirect('/admin/login?message=Usuário ou senha inválidos.');
     }
-    let token = jwt.sign({ user : auth.user}, auth.secret, { expiresIn: 30000 });
+    let token = jwt.sign({ user : auth.user }, auth.secret, { expiresIn: 30000 });
     return res.redirect('/admin/dashboard?message=Logado com sucesso.&token=' + token);
 });
 app.post('/admin/upload-images', upload.single('image'), verifyTokenUploadImages, (req, res) => {

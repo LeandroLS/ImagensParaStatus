@@ -16,7 +16,6 @@ function checkIfCategoryExists(req, res, next) {
 }
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let { category } = req.params;
-    let { token } = req.query;
     let header = 'Imagens.';
     var filter = {};
     if(category) {
@@ -35,7 +34,6 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
             categories : data[2],
             categoryPagination : category,
             header : header,
-            token : token
         });
     });
 });
@@ -74,12 +72,15 @@ app.get('/:category?/page/:number', (req, res) => {
 app.get('/search/phrase', (req, res) => {
     let { phrase } = req.query;
     let db = app.locals.db;
+    let imagesPerPage = app.locals.imagesPerPage;
     let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
-    Promise.all([images, categories]).then(data => {
+    let numberOfPages = db.collection('Images').countDocuments({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).then(qtdImages => Math.floor(qtdImages / imagesPerPage));
+    Promise.all([images, categories, numberOfPages]).then(data => {
         return res.render('index', {
             images : data[0],
-            categories : data[1]
+            categories : data[1],
+            numberOfPages : data[2]
         });
     });
 });
