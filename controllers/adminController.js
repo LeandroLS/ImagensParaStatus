@@ -14,7 +14,6 @@ function verifyToken(req, res, next){
 }
 function verifyTokenUploadImages(req, res, next){
     let token = req.body.token || req.query.token;
-    console.log(token);
     jwt.verify(token, auth.secret, (err, decoded) =>{
         if (err) return res.send({ message : 'Token need to be provided' });
         return next();
@@ -69,7 +68,7 @@ app.get('/admin/remove-image', (req,res) => {
     });
    
 });
-app.get('/admin/upload-images', (req, res) => {
+app.get('/admin/upload-images', verifyTokenUploadImages, (req, res) => {
     let { message, success, token } = req.query;
     message = { success : success, message: message };
     let db = app.locals.db;
