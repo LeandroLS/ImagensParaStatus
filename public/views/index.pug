@@ -28,7 +28,13 @@
                                     .col-md-8
                                         p(class="card-text" id="frase") #{image.phrase}
                                     .col-md-4
-                                        button(class="btn btn-primary", id="copyToClipBoard", data-clipboard-target="#frase", title="Copiar frase.") <i class="fas fa-copy"></i>
+                                        ul(class="list-group list-group-horizontal")
+                                            li.list-group-item
+                                                a(class="btn", style="background-color: #25D366") <i class="fab fa-whatsapp"></i>
+                                            li.list-group-item
+                                                a(class="btn", style="background-color: #3b5999") <i class="fab fa-facebook-square"></i>
+                                            li.list-group-item
+                                                a(class="btn btn-primary", id="copyToClipBoard", data-clipboard-target="#frase", title="Copiar frase.") <i class="fas fa-copy"></i>
                                 <p class="card-text"> Categoria: #{image.category} </p>
                 else
                     div.alert.alert-warning Nenhuma imagem encontrada.
