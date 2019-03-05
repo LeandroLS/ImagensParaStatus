@@ -14,14 +14,20 @@ function checkIfCategoryExists(req, res, next) {
         }
     });
 }
+function getImagesCategoryHeader(category = null){
+    let header = 'Imagens';
+    if(category) {
+        header = `Imagens da categoria ${category}`;
+    }
+    return header;
+}
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let { category } = req.params;
-    let header = 'Imagens.';
     var filter = {};
-    if(category) {
+    if(category){
         filter = { category : category };
-        header = `Imagens de ${category}.`;
     }
+    let header = getImagesCategoryHeader(category);
     let imagesPerPage = app.locals.imagesPerPage;
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments(filter).then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
@@ -39,6 +45,7 @@ app.get('/:category?', checkIfCategoryExists, (req, res) => {
 });
 
 app.get('/:category?/page/:number', (req, res) => {
+    let header = getImagesCategoryHeader(category);
     let imagesPerPage = app.locals.imagesPerPage;
     if(req.params.number){
         var pageNumber = req.params.number;
@@ -64,7 +71,8 @@ app.get('/:category?/page/:number', (req, res) => {
             images : data[0],
             categories : data[1],
             numberOfPages : data[2],
-            categoryPagination : category
+            categoryPagination : category,
+            header : header
         });
     });
 });
@@ -73,14 +81,16 @@ app.get('/search/phrase', (req, res) => {
     let { phrase } = req.query;
     let db = app.locals.db;
     let imagesPerPage = app.locals.imagesPerPage;
-    let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).toArray().then(images => images);
+    let header = getImagesCategoryHeader();
+    let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     let numberOfPages = db.collection('Images').countDocuments({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).then(qtdImages => Math.floor(qtdImages / imagesPerPage));
     Promise.all([images, categories, numberOfPages]).then(data => {
         return res.render('index', {
             images : data[0],
             categories : data[1],
-            numberOfPages : data[2]
+            numberOfPages : data[2],
+            header : header
         });
     });
 });

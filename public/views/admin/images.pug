@@ -22,8 +22,9 @@ html(lang="pt-br")
                                 <div class="card-body">
                                     <p class="card-text"> #{image.phrase} </p>
                                     <p class="card-text"> Categoria: #{image.category} </p>
+                                    a(href=`http://localhost:9090/admin/remove-image?fileName=${image.fileName}&token=${token}`, class="btn btn-danger") <i class="fas fa-trash-alt"></i>
                                 </div>
-                                a(href=`http://localhost:9090/admin/remove-image?fileName=${image.fileName}&token=${token}`, class="btn btn-danger") Remover
                             </div>
             else
                 div.alert.alert-warning Nenhuma imagem no banco de dados.
+    include ../layouts/footer.pug
