@@ -21,6 +21,9 @@ function getImagesCategoryHeader(category = null){
     }
     return header;
 }
+app.get('/privacidade', (req, res) => {
+    res.render('privacidade');
+});
 app.get('/:category?', checkIfCategoryExists, (req, res) => {
     let { category } = req.params;
     var filter = {};

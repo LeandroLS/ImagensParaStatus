@@ -7,8 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Imagem Para Status</title>
     include layouts/default-css-and-js.pug
-    style(type="text/css").
-        .row-space-top { margin-top:1%}
     script(src="/js/clipboard.min.js")
 </head>
 
@@ -16,13 +14,13 @@
     header
         include layouts/header.pug
     .container-fluid
-        .row(class="row-space-top")
+        .row(class="margin-top-1pct")
             .offset-md-1.col-md-7
-                .text-center.border.rounded(style="margin-bottom:1%")
+                .text-center.border.rounded(class="margin-bottom-1pct")
                     h1= header
                 if(images.length >= 1)
                     each image in images
-                        div.card(style="margin-bottom:1%")
+                        div.card(class="margin-bottom-1pct")
                             div.card-body
                                 p.blockquote
                                     img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
@@ -45,7 +43,7 @@
                                 a(href=`http://localhost:9090/${category.category}`, class="list-group-item") #{category.category} 
                         </ul>
                 </div>
-        .row(class="row-space-top")
+        .row(class="margin-top-1pct")
             .offset-md-4
                 <nav>
                     <ul class="pagination">
@@ -60,9 +58,8 @@
                         - }
                     </ul>
                 </nav>
-    
-</body>
     include layouts/footer.pug
+</body>
 script.
     new ClipboardJS('#copyToClipBoard');
 </html>

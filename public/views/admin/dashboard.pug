@@ -20,6 +20,6 @@ html(lang="pt-br")
                     a(href=`/admin/upload-images?token=${token}`) Upload Images
                 .col-md-4
                     a(href="http://") Categorias
+        include ../layouts/footer.pug
     script.
         window.localStorage.setItem('token', "#{token}");
-    include ../layouts/footer.pug
