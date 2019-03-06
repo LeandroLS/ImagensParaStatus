@@ -1,21 +1,20 @@
-div.text-white
-    <nav class="navbar navbar-expand-lg navbar-light bg-azul">
-        a(class="navbar-brand" href=`/`) Imagens Para Status
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active" style="display:none">
-                    a(class="nav-link", id="adminLink", href=`/admin/dashboard`) Admin
-                </li>
-            </ul>
-            <form method="get" action="/search/phrase" class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" id="phrase" name="phrase" type="search" placeholder="Que frase procura ?" aria-label="Que frase procura ?">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-azul">
+    a(class="navbar-brand" href=`/`) Imagens Para Status
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active" style="display:none">
+                a(class="nav-link", id="adminLink", href=`/admin/dashboard`) Admin
+            </li>
+        </ul>
+        <form method="get" action="/search/phrase" class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" id="phrase" name="phrase" type="search" placeholder="Que frase procura ?" aria-label="Que frase procura ?">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+</nav>
 script.
     $(document).ready(() => {
         var token = window.localStorage.getItem('token');
