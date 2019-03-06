@@ -39,23 +39,20 @@
                                                 button(class="btn btn-sm", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
                                                     <i class="fab fa-pinterest"></i>
                                             li.list-inline-item
-                                                button(class="btn btn-sm bg-azul", id="copyToClipBoard", data-clipboard-target="#frase", data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
+                                                button(class="btn btn-sm bg-azul-2", id="copyToClipBoard", data-clipboard-target="#frase", data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
                                                     span
                                                         <i class="fas fa-copy"></i>
                                 <p class="card-text"> Categoria: #{image.category} </p>
                 else
                     div.alert.alert-warning Nenhuma imagem encontrada.
             .col-md-3
-                <div class="panel panel-primary border rounded">
-                    <div class="panel-heading">
-                        <h3 class="panel-title text-center"> Categorias </h3>
-                    </div>
-                    if(categories)
-                        <ul class="list-group list-group-flush">
-                            for category in categories
-                                a(href=`http://localhost:9090/${category.category}`, class="list-group-item") #{category.category} 
-                        </ul>
-                </div>
+               
+                if(categories)
+                    <ul class="list-group">
+                        li.list-group-item.bg-azul-2 Categorias
+                        for category in categories
+                            li.list-group-item: a(href=`http://localhost:9090/${category.category}`) #{category.category} 
+                    </ul>
         .row(class="margin-top-1pct")
             .offset-md-4
                 <nav>
