@@ -25,20 +25,21 @@
                                 p.blockquote
                                     img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
                                 .row
-                                    .col-md-7
+                                    .col-md-8
                                         p(class="card-text" id="frase") #{image.phrase}
-                                    .col-md-5
+                                    .col-md-4
                                         ul(class="list-group list-group-horizontal")
-                                            li.list-group-item
-                                                button(class="btn btn-sm", style="background-color: #25D366" title="Compartilhar no Whatsapp") 
-                                                    span
-                                                        <i class="fab fa-whatsapp"></i>
-                                            li.list-group-item
-                                                button(class="btn btn-sm", style="background-color: #3b5999" title="Compartilhar no Facebook") 
-                                                    span
-                                                        <i class="fab fa-facebook-square"></i>
-                                            li.list-group-item
-                                                button(class="btn btn-sm btn-primary", id="copyToClipBoard", data-clipboard-target="#frase", title="Copiar frase.")
+                                            li.list-inline-item
+                                                button(class="btn btn-sm", style="background-color: #25D366" title="Compartilhar no Whatsapp"): span
+                                                    <i class="fab fa-whatsapp"></i>
+                                            li.list-inline-item
+                                                button(class="btn btn-sm", style="background-color: #3b5999" title="Compartilhar no Facebook"): span
+                                                    <i class="fab fa-facebook"></i>
+                                            li.list-inline-item
+                                                button(class="btn btn-sm", style="background-color: #bd081c" title="Compartilhar no Pinterest"): span
+                                                    <i class="fab fa-pinterest"></i>
+                                            li.list-inline-item
+                                                button(class="btn btn-sm bg-azul", id="copyToClipBoard", data-clipboard-target="#frase", title="Copiar frase.")
                                                     span
                                                         <i class="fas fa-copy"></i>
                                 <p class="card-text"> Categoria: #{image.category} </p>
