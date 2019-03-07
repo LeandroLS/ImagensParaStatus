@@ -30,16 +30,16 @@
                                     .col-md-4
                                         ul(class="list-group list-group-horizontal")
                                             li.list-inline-item
-                                                button(class="btn btn-sm", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
+                                                button(class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
                                                     <i class="fab fa-whatsapp"></i>
                                             li.list-inline-item
-                                                button(class="btn btn-sm", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook"): span
+                                                button(class="btn btn-sm hover-white", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook"): span
                                                     <i class="fab fa-facebook"></i>
                                             li.list-inline-item
-                                                button(class="btn btn-sm", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
+                                                button(class="btn btn-sm hover-white", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
                                                     <i class="fab fa-pinterest"></i>
                                             li.list-inline-item
-                                                button(class="btn btn-sm bg-azul-2 copyToClipBoard", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
+                                                button(class="btn btn-sm bg-azul-2 copyToClipBoard hover-white", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
                                                     span
                                                         <i class="fas fa-copy"></i>
                                 <br>
@@ -63,7 +63,7 @@
                         - var categoryPageRouting = '';
                         if(categoryPagination != undefined)
                             - var categoryPageRouting = '/' + categoryPagination;
-                        - for(var i = 1; i <= numberOfPages; i++) {
+                        - for(var i = 1; i < numberOfPages; i++) {
                             li(class="page-item") 
                                 a(class="page-link" href=`${categoryPageRouting}/page/${i+1}`) #{i+1}
                         - }

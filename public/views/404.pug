@@ -10,7 +10,8 @@ html(lang="pt-br")
         header
             include layouts/header.pug
         div.container.text-center
-            div(style="margin-top:10%")
+            div(class="margin-top-1pct")
                 i(class="fas fa-exclamation-circle fa-10x")
                 p Ops! Parece que o link que você tentou acessar não existe mais ou mudou de endereço.
+                a.btn.bg-azul-2.text-white(href="/"): <i class="fas fa-home"></i> Página Inicial
         include layouts/footer.pug

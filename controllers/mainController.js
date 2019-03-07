@@ -32,9 +32,9 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
     let header = getImagesCategoryHeader(category);
     let imagesPerPage = app.locals.imagesPerPage;
     let db = app.locals.db;
-    let numberOfPages = db.collection('Images').countDocuments(filter).then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
-    let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
-    let categories = db.collection('Categories').find().toArray().then(categories => categories);
+    let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
+    let images = await db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
+    let categories = await db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([numberOfPages, images, categories]).then(data => {
         return res.render('index', {
             numberOfPages : data[0],
