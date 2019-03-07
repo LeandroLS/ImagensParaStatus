@@ -12,7 +12,7 @@ function verifyToken(req, res, next){
         return next();
     });
 }
-function verifyTokenUploadImages(req, res, next){
+async function verifyTokenUploadImages(req, res, next){
     let token = req.body.token || req.query.token;
     jwt.verify(token, auth.secret, (err, decoded) =>{
         if (err) return res.send({ message : 'Token need to be provided' });
@@ -88,56 +88,57 @@ app.post('/admin/auth', (req, res) => {
     let token = jwt.sign({ user : auth.user }, auth.secret, { expiresIn: 30000 });
     return res.redirect('/admin/dashboard?message=Logado com sucesso.&token=' + token);
 });
-app.post('/admin/upload-images', upload.single('image'), verifyTokenUploadImages, (req, res) => {
+app.post('/admin/upload-images', upload.single('image'), verifyTokenUploadImages, async (req, res) => {
     let { originalname, filename } = req.file;
     let { category, existentCategory, phrase, token } = req.body;
     let db = app.locals.db;
     if(existentCategory != ''){
         category = existentCategory;
     }
-    db.collection('Phrases').find({ phrase : phrase }).toArray().then(phraseResult => {
-        if(phraseResult.length == 0){
+    let phrases = await db.collection('Phrases').find({ phrase : phrase }).toArray();
+    try {
+        if(phrases.length == 0){
             db.collection('Phrases').insertOne({
                 phrase: phrase,
                 category: category,
                 fileName: filename
             });
         } else {
-            let result = {
-                success: false,
-                message: 'Frase já existe'
-            };
-            return Promise.reject(result);
+            throw new Error("Frase já existe.");
         }
-    }).then(() => {
-        db.collection('Categories').find({category : category}).toArray().then(categoryResult => {
-            if(categoryResult.length == 0){
-                db.collection('Categories').insertOne({
-                    category : category
-                });
-            }
-        });
-    }).then(() => {
-        db.collection('Images').countDocuments().then(qtdImages => {
-            db.collection('Images').insertOne({
-                originalName: originalname, 
-                fileName: filename,
-                category: category,
-                phrase: phrase,
-                id: qtdImages+1
+
+        let categorias = await db.collection('Categories').find({category : category}).toArray();
+        if(categorias.length == 0){
+            await db.collection('Categories').insertOne({
+                category : category
             });
-            let result = {
-                success: true,
-                message: 'Imagem inserida com sucesso.'
-            };
-            return res.redirect('/admin/upload-images?success=' +  result.success + '&message=' + result.message  +'&token=' + token);
+        }
+
+        let qtdImages = await db.collection('Images').countDocuments();
+        await db.collection('Images').insertOne({
+            originalName: originalname, 
+            fileName: filename,
+            category: category,
+            phrase: phrase,
+            id: qtdImages+1
         });
-    }).catch(erro => {
+
+        let result = {
+            success: true,
+            message: 'Imagem inserida com sucesso.'
+        };
+
+        return res.redirect('/admin/upload-images?success=' +  result.success + '&message=' + result.message  +'&token=' + token);
+    } catch(erro){
         unlink(path.normalize('./public/images/original-images/' + filename), (err) => {
             if(err) console.log(err);
             console.log('Arquivo removido');
         });
-        return res.redirect('/admin/upload-images?success=false&message=' + erro.message + '&token=' + token);
-    });
+        let result = {
+            success: false,
+            message: 'Frase já existe'
+        };
+        return res.redirect('/admin/upload-images?success=false&message=' + result.message + '&token=' + token);
+    }
 });
 
