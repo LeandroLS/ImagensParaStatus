@@ -17,7 +17,7 @@
         .row(class="margin-top-1pct")
             .col-md-9
                 .text-center.border.rounded(class="margin-bottom-1pct")
-                    h1= header
+                    h1.text-white= header
                 if(images.length >= 1)
                     each image in images
                         div.card(class="margin-bottom-1pct")
@@ -26,7 +26,7 @@
                                     img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
                                 .row
                                     .col-md-8
-                                        p(class="card-text" id="frase") #{image.phrase}
+                                        p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
                                     .col-md-4
                                         ul(class="list-group list-group-horizontal")
                                             li.list-inline-item
@@ -39,9 +39,10 @@
                                                 button(class="btn btn-sm", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
                                                     <i class="fab fa-pinterest"></i>
                                             li.list-inline-item
-                                                button(class="btn btn-sm bg-azul-2", id="copyToClipBoard", data-clipboard-target="#frase", data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
+                                                button(class="btn btn-sm bg-azul-2 copyToClipBoard", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
                                                     span
                                                         <i class="fas fa-copy"></i>
+                                <br>
                                 <p class="card-text"> Categoria: #{image.category} </p>
                 else
                     div.alert.alert-warning Nenhuma imagem encontrada.
@@ -49,7 +50,7 @@
                
                 if(categories)
                     <ul class="list-group">
-                        li.list-group-item.bg-azul-2 Categorias
+                        li.list-group-item.bg-azul-2.text-white.text-center Categorias
                         for category in categories
                             li.list-group-item: a(href=`http://localhost:9090/${category.category}`) #{category.category} 
                     </ul>
@@ -71,10 +72,10 @@
     include layouts/footer.pug
 </body>
 script.
-    new ClipboardJS('#copyToClipBoard');
+    new ClipboardJS('.copyToClipBoard');
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
-        $('#copyToClipBoard').on('click', function() {
+        $('.copyToClipBoard').on('click', function() {
             $(this).tooltip('hide');
             $(this).attr('data-original-title', 'Frase copiada! :)');
             $(this).tooltip('show');
