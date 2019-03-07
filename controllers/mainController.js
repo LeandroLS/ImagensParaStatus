@@ -1,18 +1,17 @@
 const app = require('../config/express');
-function checkIfCategoryExists(req, res, next) {
+async function checkIfCategoryExists(req, res, next) {
     let  { category } = req.params;
     if(typeof category === 'undefined'){
         return next();
     }
     let db = app.locals.db;
-    db.collection('Categories').find().toArray().then(categories => {
-        let categoriesFilter = categories.filter(value => value.category == category);
-        if(categoriesFilter.length >= 1){
-            return next();
-        } else {
-            return res.render('404');
-        }
-    });
+    let categories = await db.collection('Categories').find().toArray();
+    let categoriesFilter = categories.filter(value => value.category == category);
+    if(categoriesFilter.length >= 1){
+        return next();
+    } else {
+        return res.render('404');
+    }
 }
 function getImagesCategoryHeader(category = null){
     let header = 'Imagens';
@@ -24,7 +23,7 @@ function getImagesCategoryHeader(category = null){
 app.get('/privacidade', (req, res) => {
     res.render('privacidade');
 });
-app.get('/:category?', checkIfCategoryExists, (req, res) => {
+app.get('/:category?', checkIfCategoryExists, async (req, res) => {
     let { category } = req.params;
     var filter = {};
     if(category){

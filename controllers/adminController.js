@@ -28,16 +28,15 @@ app.get('/admin/login', (req, res) => {
     let message = req.query.message;
     return res.render('admin/login', { message : message });
 });
-app.get('/admin/images', (req,res) => {
+app.get('/admin/images', async (req,res) => {
     let { message, success, token } = req.query;
     message = { message, success };
     let db = app.locals.db;
-    db.collection('Images').find().toArray().then(images => {
-        return res.render('admin/images', {
-            images : images,
-            message : message,
-           token : token
-        });
+    let images = await db.collection('Images').find().toArray();
+    return res.render('admin/images', {
+        images : images,
+        message : message,
+        token : token
     });
 });
 app.get('/admin/remove-image', (req,res) => {
@@ -69,16 +68,15 @@ app.get('/admin/remove-image', (req,res) => {
     });
    
 });
-app.get('/admin/upload-images', verifyTokenUploadImages, (req, res) => {
+app.get('/admin/upload-images', verifyTokenUploadImages, async (req, res) => {
     let { message, success, token } = req.query;
     message = { success : success, message: message };
     let db = app.locals.db;
-    db.collection('Categories').find().toArray().then(categories => {
-        return res.render('admin/upload-images', {
-            message : message,
-            categories : categories,
-            token : token
-        });
+    let categories = await db.collection('Categories').find().toArray();
+    return res.render('admin/upload-images', {
+        message : message,
+        categories : categories,
+        token : token
     });
 });
 
