@@ -1,6 +1,7 @@
 const app = require('../config/express');
+app.locals.imagesPerPage = 2;
 async function checkIfCategoryExists(req, res, next) {
-    let  { category } = req.params;
+    let { category } = req.params;
     if(typeof category === 'undefined'){
         return next();
     }
@@ -16,10 +17,16 @@ async function checkIfCategoryExists(req, res, next) {
 function getImagesCategoryHeader(category = null){
     let header = 'Imagens';
     if(category) {
-        header = `Imagens da categoria ${category}`;
+        header = `Imagens da categoria: ${category}`;
     }
     return header;
 }
+
+function calcNumberOfPages(qtdImages){
+    let imagesPerPage = app.locals.imagesPerPage;
+    return Math.ceil(qtdImages / imagesPerPage);
+}
+
 app.get('/privacidade', (req, res) => {
     res.render('privacidade');
 });
@@ -32,7 +39,7 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
     let header = getImagesCategoryHeader(category);
     let imagesPerPage = app.locals.imagesPerPage;
     let db = app.locals.db;
-    let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages =>  Math.floor(qtdImages / imagesPerPage));
+    let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([numberOfPages, images, categories]).then(data => {
@@ -47,7 +54,6 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
 });
 
 app.get('/:category?/page/:number', (req, res) => {
-    let header = getImagesCategoryHeader(category);
     let imagesPerPage = app.locals.imagesPerPage;
     if(req.params.number){
         var pageNumber = req.params.number;
@@ -56,6 +62,7 @@ app.get('/:category?/page/:number', (req, res) => {
         };
         if(req.params.category){
             var category = req.params.category;
+            var header = getImagesCategoryHeader(category);
             var filterNumberOfPages = { category : category };
             filterImages.category = category;
         } else {
@@ -65,7 +72,7 @@ app.get('/:category?/page/:number', (req, res) => {
         var filterImages = {};
     }
     let db = app.locals.db;
-    let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => Math.floor(qtdImages / imagesPerPage));
+    let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
     let images = db.collection('Images').find(filterImages).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([images, categories, numberOfPages]).then(data => {
@@ -83,10 +90,10 @@ app.get('/search/phrase', (req, res) => {
     let { phrase } = req.query;
     let db = app.locals.db;
     let imagesPerPage = app.locals.imagesPerPage;
-    let header = getImagesCategoryHeader();
+    let header = 'Buscando por: ' + phrase;
     let images = db.collection('Images').find({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).limit(imagesPerPage).toArray().then(images => images);
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
-    let numberOfPages = db.collection('Images').countDocuments({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).then(qtdImages => Math.floor(qtdImages / imagesPerPage));
+    let numberOfPages = db.collection('Images').countDocuments({ phrase: {$regex: `.*${phrase}.*`, $options:'i'}}).then(qtdImages => calcNumberOfPages(qtdImages));
     Promise.all([images, categories, numberOfPages]).then(data => {
         return res.render('index', {
             images : data[0],

@@ -3,7 +3,6 @@ const MongoClient = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 const dbName = 'ImagensParaStatus';
 const mongoClient = new MongoClient(url, { useNewUrlParser: true });
-app.locals.imagesPerPage = 2;
 mongoClient.connect().then(db => {
     app.locals.db = mongoClient.db(dbName);
 }).catch(err => {
