@@ -58,11 +58,14 @@
                 <nav>
                     <ul class="pagination">
                         - var categoryPageRouting = '';
+                        - var phraseQuery = '';
                         if(categoryPagination != undefined && categoryPagination != '')
                             - var categoryPageRouting = '/' + categoryPagination;
+                        if(phrase != undefined && phrase != '')
+                            - var phraseQuery = '?phrase=' + phrase;
                         - for(var i = 1; i <= numberOfPages; i++) {
                             li(class="page-item") 
-                                a(class="page-link" href=`${categoryPageRouting}/page/${i}`) #{i}
+                                a(class="page-link" href=`${categoryPageRouting}/page/${i}${phraseQuery}`) #{i}
                         - }
                     </ul>
                 </nav>
