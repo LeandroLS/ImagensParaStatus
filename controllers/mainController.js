@@ -58,7 +58,7 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
     });
 });
 
-app.get('/:category?/page/:number', (req, res) => {
+app.get('/:category?/page/:number', async (req, res) => {
     let imagesPerPage = app.locals.imagesPerPage;
     let { phrase } = req.query;
     var filter = {};
@@ -79,13 +79,13 @@ app.get('/:category?/page/:number', (req, res) => {
     }
     let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
-    let images = db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
+    let images = await db.collection('Images').find(filter).limit(imagesPerPage).toArray();
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
-    Promise.all([images, categories, numberOfPages]).then(data => {
+    Promise.all([categories, numberOfPages]).then(data => {
         return res.render('index', {
-            images : data[0],
-            categories : data[1],
-            numberOfPages : data[2],
+            images : images,
+            categories : data[0],
+            numberOfPages : data[1],
             categoryPagination : category,
             header : header,
             phrase : phrase
