@@ -1,5 +1,5 @@
 const app = require('../config/express');
-app.locals.imagesPerPage = 2;
+app.locals.imagesPerPage = 1;
 async function checkIfCategoryExists(req, res, next) {
     let { category } = req.params;
     if(typeof category === 'undefined'){
@@ -70,6 +70,7 @@ app.get('/:category?/page/:number', (req, res) => {
             var category = req.params.category;
             var header = getImagesCategoryHeader(category);
             filterNumberOfPages.category = category;
+            filter.category = category;
         }
         if(phrase){
             filter.phrase = { $regex: `.*${phrase}.*`, $options:'i' };
