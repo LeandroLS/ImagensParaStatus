@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Imagem Para Status</title>
     include layouts/default-css-and-js.pug
+    include layouts/facebookSDK.pug
     script(src="/js/clipboard.min.js")
 </head>
 
@@ -16,34 +17,32 @@
     .container
         .row(class="margin-top-1pct")
             .col-md-9
-                .text-center.border.rounded(class="margin-bottom-1pct")
-                    h1.text-white= header
+                .text-center.border.rounded(class="margin-bottom-1pct"): h1.text-white= header
                 if(images.length >= 1)
                     each image in images
-                        div.card(class="margin-bottom-1pct")
-                            div.card-body
-                                p.blockquote
-                                    img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
-                                .row
-                                    .col-md-8
-                                        p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
-                                    .col-md-4
-                                        ul(class="list-group list-group-horizontal")
-                                            li.list-inline-item
-                                                button(class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
-                                                    <i class="fab fa-whatsapp"></i>
-                                            li.list-inline-item
+                        div.card(class="margin-bottom-1pct"): div.card-body
+                            p.blockquote
+                                img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid")
+                            .row
+                                .col-md-8
+                                    p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
+                                .col-md-4
+                                    ul(class="list-group list-group-horizontal")
+                                        li.list-inline-item
+                                            button(class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
+                                                <i class="fab fa-whatsapp"></i>
+                                        li.list-inline-item
                                                 button(class="btn btn-sm hover-white", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook"): span
                                                     <i class="fab fa-facebook"></i>
-                                            li.list-inline-item
-                                                button(class="btn btn-sm hover-white", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
-                                                    <i class="fab fa-pinterest"></i>
-                                            li.list-inline-item
-                                                button(class="btn btn-sm bg-azul-2 copyToClipBoard hover-white", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
-                                                    span
-                                                        <i class="fas fa-copy"></i>
-                                <br>
-                                <p class="card-text"> Categoria: #{image.category} </p>
+                                        li.list-inline-item
+                                            button(class="btn btn-sm hover-white", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
+                                                <i class="fab fa-pinterest"></i>
+                                        li.list-inline-item
+                                            button(class="btn btn-sm bg-azul-2 copyToClipBoard hover-white", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
+                                                span
+                                                    <i class="fas fa-copy"></i>
+                            <br>
+                            <p class="card-text"> Categoria: #{image.category} </p>
                 else
                     div.alert.alert-warning Nenhuma imagem encontrada.
             .col-md-3
