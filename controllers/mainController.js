@@ -1,6 +1,8 @@
 const app = require('../config/express');
 const ObjectId = require('mongodb').ObjectID;
+
 app.locals.imagesPerPage = 1;
+
 async function checkIfCategoryExists(req, res, next) {
     let { category } = req.params;
     if(typeof category === 'undefined'){
@@ -26,6 +28,19 @@ function getImagesCategoryHeader(category = null){
 function calcNumberOfPages(qtdImages){
     let imagesPerPage = app.locals.imagesPerPage;
     return Math.ceil(qtdImages / imagesPerPage);
+}
+
+function getMinAndMaxId(){
+    var minId = (pageNumber * imagesPerPage) - imagesPerPage;
+    var maxId = minId + imagesPerPage;
+    return { maxId, minId };
+}
+
+function filterImagesPerLastId(value){
+    let id = getMinAndMaxId();
+    if(value.id > id.minId && value.id <= id.maxId){
+        return value;
+    }
 }
 
 app.get('/privacidade', (req, res) => {
@@ -60,27 +75,34 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
 });
 
 app.get('/:category?/page/:number', async (req, res) => {
+    let db = app.locals.db;
     let imagesPerPage = app.locals.imagesPerPage;
     let { phrase } = req.query;
     var filter = {};
     var filterNumberOfPages = {};
+    if(req.params.category){
+        var category = req.params.category;
+        var header = getImagesCategoryHeader(category);
+        filterNumberOfPages.category = category;
+        filter.category = category;
+    }
+    if(phrase){
+        filterNumberOfPages.phrase = { $regex: `.*${phrase}.*`, $options:'i' };
+        filter.phrase = { $regex: `.*${phrase}.*`, $options:'i' };
+    }
+
     if(req.params.number){
         var pageNumber = req.params.number;
-        filter.id = { $gt : parseInt((pageNumber * imagesPerPage) - imagesPerPage) };
-        if(req.params.category){
-            var category = req.params.category;
-            var header = getImagesCategoryHeader(category);
-            filterNumberOfPages.category = category;
-            filter.category = category;
-        }
-        if(phrase){
-            filter.phrase = { $regex: `.*${phrase}.*`, $options:'i' };
-            filterNumberOfPages.phrase = { $regex: `.*${phrase}.*`, $options:'i' };
-        }
+        var imagesArray = new Array();
+        var i = 1 ;
+        await db.collection('Images').find(filter).forEach(function (document) {
+            document.id = i;
+            imagesArray.push(document);
+            i++;
+        });
+        var images = await imagesArray.filter(filterImagesPerLastId);
     }
-    let db = app.locals.db;
     let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
-    let images = await db.collection('Images').find(filter).limit(imagesPerPage).toArray();
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([categories, numberOfPages]).then(data => {
         return res.render('index', {
