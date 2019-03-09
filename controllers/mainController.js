@@ -1,4 +1,5 @@
 const app = require('../config/express');
+const ObjectId = require('mongodb').ObjectID;
 app.locals.imagesPerPage = 1;
 async function checkIfCategoryExists(req, res, next) {
     let { category } = req.params;
@@ -91,4 +92,14 @@ app.get('/:category?/page/:number', async (req, res) => {
             phrase : phrase
         });
     });
+});
+
+app.get('/image/:id', async (req, res) => {
+    let db = app.locals.db;
+    let { id } = req.params;
+    if(id.length < 12) {
+        return res.render('404');
+    }
+    let images = await db.collection('Images').find({ _id : ObjectId(id) }).toArray();
+    res.render('index', { images : images });
 });
