@@ -1,6 +1,6 @@
 const app = require('./config/express');
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb+srv://llimas:04159632@imagensparastatus-6qfkr.gcp.mongodb.net/test?retryWrites=true";';
 const dbName = 'ImagensParaStatus';
 const mongoClient = new MongoClient(url, { useNewUrlParser: true });
 mongoClient.connect().then(db => {
