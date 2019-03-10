@@ -40,6 +40,10 @@
                                         button(class="btn btn-sm bg-azul-2 copyToClipBoard hover-white", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
                                             span
                                                 <i class="fas fa-copy"></i>
+                                    li.list-inline-item
+                                        a(class="btn btn-sm bg-azul-2 hover-white", data-toggle="tooltip", data-placement="bottom", title="Baixar imagem" href=`/images/original-images/${image.fileName}` download=`${image.phrase.slice(0,30)}.jpg`)
+                                            span
+                                                <i class="fas fa-download"></i>
                         <br>
                         <p class="card-text"> Categoria: #{image.category} </p>
             else
