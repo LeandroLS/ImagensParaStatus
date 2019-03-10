@@ -30,19 +30,6 @@ function calcNumberOfPages(qtdImages){
     return Math.ceil(qtdImages / imagesPerPage);
 }
 
-function getMinAndMaxId(){
-    var minId = (pageNumber * imagesPerPage) - imagesPerPage;
-    var maxId = minId + imagesPerPage;
-    return { maxId, minId };
-}
-
-function filterImagesPerLastId(value){
-    let id = getMinAndMaxId();
-    if(value.id > id.minId && value.id <= id.maxId){
-        return value;
-    }
-}
-
 app.get('/privacidade', (req, res) => {
     res.render('privacidade');
 });
@@ -69,20 +56,20 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
             categories : data[2],
             categoryPagination : category,
             phrase : phrase,
-            header : header
+            header : header,
+            currentPage : 1
         });
     });
 });
 
 app.get('/:category?/page/:number', async (req, res) => {
     let db = app.locals.db;
-    let imagesPerPage = app.locals.imagesPerPage;
     let { phrase } = req.query;
     var filter = {};
     var filterNumberOfPages = {};
+    var header = getImagesCategoryHeader(category);
     if(req.params.category){
         var category = req.params.category;
-        var header = getImagesCategoryHeader(category);
         filterNumberOfPages.category = category;
         filter.category = category;
     }
@@ -100,6 +87,19 @@ app.get('/:category?/page/:number', async (req, res) => {
             imagesArray.push(document);
             i++;
         });
+        function getMinAndMaxId(){
+            let imagesPerPage = app.locals.imagesPerPage;
+            let minId = (pageNumber * imagesPerPage) - imagesPerPage;
+            let maxId = minId + imagesPerPage;
+            return { maxId, minId };
+        }
+        
+        function filterImagesPerLastId(value){
+            let id = getMinAndMaxId();
+            if(value.id > id.minId && value.id <= id.maxId){
+                return value;
+            }
+        }
         var images = await imagesArray.filter(filterImagesPerLastId);
     }
     let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
@@ -109,6 +109,7 @@ app.get('/:category?/page/:number', async (req, res) => {
             images : images,
             categories : data[0],
             numberOfPages : data[1],
+            currentPage : pageNumber,
             categoryPagination : category,
             header : header,
             phrase : phrase

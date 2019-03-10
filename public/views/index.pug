@@ -54,24 +54,56 @@
     .row(class="margin-top-1pct")
         .offset-md-4
             <nav>
-                <ul class="pagination">
-                    - var categoryPageRouting = '';
-                    - var phraseQuery = '';
-                    if(categoryPagination != undefined && categoryPagination != '')
-                        - var categoryPageRouting = '/' + categoryPagination;
-                    if(phrase != undefined && phrase != '')
-                        - var phraseQuery = '?phrase=' + phrase;
-                    - for(var i = 1; i <= numberOfPages; i++) {
-                        li(class="page-item") 
-                            a(class="page-link" href=`${categoryPageRouting}/page/${i}${phraseQuery}`) #{i}
-                    - }
+                <ul class="pagination" id="paginationBar">
+                    //- - for(var i = 1; i <= numberOfPages; i++) {
+                    //-     - if(i <= 3){
+                    //-         li(class="page-item") 
+                    //-             a(class="page-link" href=`${categoryPageRouting}/page/${i}${phraseQuery}`) #{i}
+                    //-     - } else {
+                    //-         li(class="page-item") 
+                    //-             a(class="page-link" href=`${categoryPageRouting}/page/${i}${phraseQuery}`) ...
+                    //-         - break;
+                    //-     - }
+                    //- - }
                 </ul>
             </nav>
     include layouts/footer.pug
 </body>
 script.
+    function renderPaginationBar(){
+        let intervalPages = 3;
+        let category = "#{categoryPagination}";
+        if(!category){
+            category = '';
+        }
+        let phrase = "#{phrase}";
+        if(phrase){
+            phrase = '?phrase=' + phrase;
+        }
+        let currentPage = parseInt("#{currentPage}");
+        let numberOfPages = parseInt("#{numberOfPages}");
+        if(currentPage != undefined){
+            var startPage = currentPage - intervalPages;
+            var endPage = currentPage + intervalPages;
+        }
+        if(startPage <= 0) {
+            endPage = endPage - (startPage - 1);
+            startPage = 1;
+        }
+        if(endPage > numberOfPages){
+            endPage = numberOfPages;
+        }
+        for(var iterator = startPage; iterator <= endPage; iterator++){
+            $("#paginationBar").append(`
+                <li class="page-item"> 
+                    <a class="page-link" href=${category}/page/${iterator}${phrase}> ${iterator} </a>
+                </li>`
+            );
+        }
+    }
     new ClipboardJS('.copyToClipBoard');
     $(function () {
+        renderPaginationBar();
         $('[data-toggle="tooltip"]').tooltip();
         $('.copyToClipBoard').on('click', function() {
             $(this).tooltip('hide');
