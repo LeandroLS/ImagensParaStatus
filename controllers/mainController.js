@@ -30,9 +30,16 @@ function calcNumberOfPages(qtdImages){
     return Math.ceil(qtdImages / imagesPerPage);
 }
 
-app.get('/privacidade', (req, res) => {
+app.get('/privacidade', async (req, res) => {
     res.render('privacidade');
 });
+
+app.get('/sobre', async (req, res) => {
+    let db = app.locals.db;
+    let categories = await db.collection('Categories').find().toArray();
+    res.render('sobre', { categories : categories});
+});
+
 app.get('/:category?', checkIfCategoryExists, async (req, res) => {
     let { phrase } = req.query;
     let { category } = req.params;

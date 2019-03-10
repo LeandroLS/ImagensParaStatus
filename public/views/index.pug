@@ -48,6 +48,12 @@
                         <p class="card-text"> Categoria: #{image.category} </p>
             else
                 div.alert.alert-warning Nenhuma imagem encontrada.
+            .row.margin-top-1pct
+                .offset-md-4.col-md-4
+                    <nav>
+                        <ul class="pagination" id="paginationBar">
+                        </ul>
+                    </nav>
         .col-md-3
             if(categories)
                 <ul class="list-group">
@@ -57,10 +63,7 @@
                 </ul>
     .row(class="margin-top-1pct")
         .offset-md-4
-            <nav>
-                <ul class="pagination" id="paginationBar">
-                </ul>
-            </nav>
+            
     include layouts/footer.pug
 </body>
 script.

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+html(lang="pt-br")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Imagens Para Status
+        include layouts/default-css-and-js.pug
+    body
+        include layouts/header.pug
+        .container
+            .row(class="margin-top-1pct")
+                .col-md-9
+                    <div class="card page">
+                        .col-md-12
+                            .text-center(class="margin-bottom-1pct")
+                                h1 Sobre
+                            <p>O Imagens Para Status foi criado com o objetivo de fornecer imagens para ser compartilhadas em redes sociais.</p>
+                            <p>Aqui você encontra diversas imagens com frases escritas para compartilhar nas suas redes sociais.</p>
+                            <p>Todos os dias publicamos novas imagens.</p>
+                </div>
+                .col-md-3
+                    if(categories)
+                        <ul class="list-group">
+                            li.list-group-item.bg-azul-2.text-white.text-center Categorias
+                            for category in categories
+                                li.list-group-item: a(href=`/${category.category}`) #{category.category} 
+                        </ul>
+        include layouts/footer.pug
