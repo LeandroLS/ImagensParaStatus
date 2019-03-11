@@ -4,6 +4,7 @@ const auth = require('../config/auth.json');
 const upload = require('../config/upload');
 const { rename, unlink } = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 function verifyToken(req, res, next){
     let token = req.body.token || req.query.token;
     if(req.path == '/login' || req.path == '/auth' || req.path == '/upload-images') return next();
@@ -82,7 +83,10 @@ app.get('/admin/upload-images', verifyTokenUploadImages, async (req, res) => {
 
 app.post('/admin/auth', (req, res) => {
     let { user, password } = req.body;
-    if ( user != auth.user || password != auth.password ){
+    let algorithm = 'aes256';
+    let cipher = crypto.createCipher(algorithm, auth.secret);
+    let encrypted = cipher.update(password, 'utf8', 'hex') + cipher.final('hex');
+    if ( user != auth.user || encrypted != auth.password ){
         return res.redirect('/admin/login?message=Usuário ou senha inválidos.');
     }
     let token = jwt.sign({ user : auth.user }, auth.secret, { expiresIn: 30000 });

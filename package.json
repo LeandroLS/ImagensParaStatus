@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "crypto": "^1.0.1",
     "express": "^4.16.4",
     "jimp": "^0.6.0",
     "jsonwebtoken": "^8.5.0",
