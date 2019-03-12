@@ -131,5 +131,6 @@ app.get('/image/:id', async (req, res) => {
         return res.render('404');
     }
     let images = await db.collection('Images').find({ _id : ObjectId(id) }).toArray();
-    res.render('index', { images : images });
+    let categories = await db.collection('Categories').find().toArray().then(categories => categories);
+    res.render('single-image', { images : images, categories : categories });
 });
