@@ -1,4 +1,3 @@
-const DB = require('../database/DB');
 module.exports = {
     /**
      * Data determinada porcentagem, calcular a posição da mesma sobra a imagem.
