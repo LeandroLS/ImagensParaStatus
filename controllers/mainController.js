@@ -18,7 +18,7 @@ async function checkIfCategoryExists(req, res, next) {
     }
 }
 function getImagesCategoryHeader(category = null){
-    let header = 'Imagens';
+    let header = 'Imagens Para Status';
     if(category) {
         header = `Imagens da categoria: ${category}`;
     }

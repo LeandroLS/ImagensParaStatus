@@ -2,3 +2,8 @@ User-agent: *
 Disallow: /public/images/deleted-images/
 Disallow: /public/fonts/
 Disallow: /admin/
+Disallow: /test/
+Disallow: /node_modules/
+Disallow: /modules/
+Disallow: /libs/
+Disallow: /config/
