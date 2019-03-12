@@ -10,4 +10,5 @@ mongoClient.connect().then(db => {
 });
 require('./controllers/adminController');
 require('./controllers/mainController');
-app.listen(9090);
+var port = process.env.PORT || 3000;
+app.listen(port);
