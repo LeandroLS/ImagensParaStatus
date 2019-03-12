@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /public/images/deleted-images
+Disallow: /public/fonts/
+Disallow: /admin/
