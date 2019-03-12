@@ -18,9 +18,7 @@ html(lang="pt-br")
                     div.alert.alert-danger #{message.message}
             form(action="/admin/upload-images", method="post", enctype="multipart/form-data")
                 input(type="hidden", name="token", value=`${token}`)
-                .form-group
-                    label(for="image") Upload de Imagem
-                    input(type="file", name="image", class="form-control-file", required)
+               
                 .form-group
                     label(for="phrase") Frase
                     input(type="text", name="phrase", class="form-control",  required)
@@ -34,5 +32,8 @@ html(lang="pt-br")
                             if(categories.length >= 1)
                                 for category in categories
                                     option(value=`${category.category}`) #{category.category}
+                .form-group
+                    label(for="image") Upload de Imagem
+                    input(type="file", name="image", class="form-control-file", required)
                 button(type="submit", class="btn btn-primary", value="Upload") Enviar
         include ../layouts/footer.pug
