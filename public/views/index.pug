@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Imagens Para Status</title>
+    script(src="/js/popper.js")
     include layouts/default-css-and-js.pug
     include layouts/facebookSDK.pug
     script(src="/js/clipboard.min.js")
     script(src="/js/jquery.lazy.min.js")
-    //- script(src="/js/jquery.lazy.plugins.min.js")
-    script(src="/js/popper.js")
+    script(src="/js/jquery.lazy.plugins.min.js")
 </head>
 
 <body>
@@ -25,7 +25,7 @@
                 each image in images
                     div.card(class="margin-bottom-1pct"): div.card-body
                         p.blockquote
-                            a(href=`/image/${image._id}`): img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid", title=`${image.phrase}`)
+                            a(href=`/image/${image._id}`): img(src=`/images/original-images/${image.fileName}`, data-src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
                         .row
                             .col-md-8
                                 p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
@@ -105,6 +105,11 @@ script.
     new ClipboardJS('.copyToClipBoard');
     $(function () {
         renderPaginationBar();
+        $('.lazy').lazy({
+            effect: "fadeIn",
+            effectTime: 2000,
+            threshold: 0
+        });
         $('[data-toggle="tooltip"]').tooltip();
         $('.copyToClipBoard').on('click', function() {
             $(this).tooltip('hide');
