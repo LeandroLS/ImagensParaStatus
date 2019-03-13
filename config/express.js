@@ -1,4 +1,5 @@
 require('dotenv').config();
+let compression = require('compression');
 const express = require('express');
 const path = require('./path');
 const app = express();
@@ -17,4 +18,5 @@ function wwwRedirect(req, res, next) {
 };
 app.set('trust proxy', true);
 app.use(wwwRedirect);
+app.use(compression());
 module.exports = app;
