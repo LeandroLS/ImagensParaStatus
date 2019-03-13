@@ -21,7 +21,7 @@
                 each image in images
                     div.card(class="margin-bottom-1pct"): div.card-body
                         p.blockquote
-                            a(href=`/image/${image._id}`): img(data-src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
+                            a(href=`/image/${image.fileName}`): img(data-src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
                         .row
                             .col-md-8
                                 p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
