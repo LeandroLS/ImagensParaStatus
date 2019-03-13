@@ -13,6 +13,7 @@ async function checkIfCategoryExists(req, res, next) {
     if(categoriesFilter.length >= 1){
         return next();
     } else {
+        res.status(404);
         return res.render('404');
     }
 }
