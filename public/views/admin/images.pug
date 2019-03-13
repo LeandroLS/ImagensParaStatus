@@ -23,6 +23,7 @@ html(lang="pt-br")
                                     <p class="card-text"> #{image.phrase} </p>
                                     <p class="card-text"> Categoria: #{image.category} </p>
                                     a(href=`/admin/remove-image?fileName=${image.fileName}&token=${token}`, class="btn btn-danger") <i class="fas fa-trash-alt"></i>
+                                    a(href=`/images/original-images/${image.fileName}`, class="btn bg-azul-2 hover-white" download=`${image.fileName}`) <i class="fas fa-download"></i>
                                 </div>
                             </div>
             else
