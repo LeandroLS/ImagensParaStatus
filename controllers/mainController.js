@@ -25,6 +25,16 @@ function getImagesCategoryHeader(category = null){
     return header;
 }
 
+function getMetaDescription($category = null){
+    var description = '';
+    if($category){
+        description = `Imagens para compartilhar nos status das redes sociais relacionadas a ${$category}`;
+    } else {
+        description = 'Imagens Para Status. Diversas imagens para compartilhar nos status das redes sociais! :D'
+    }
+    return description;
+}
+
 function calcNumberOfPages(qtdImages){
     let imagesPerPage = app.locals.imagesPerPage;
     return Math.ceil(qtdImages / imagesPerPage);
@@ -52,6 +62,7 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
     }
     let header = getImagesCategoryHeader(category);
     let imagesPerPage = app.locals.imagesPerPage;
+    let metaDescription = getMetaDescription(category);
     let db = app.locals.db;
     let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
@@ -64,7 +75,8 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
             categoryPagination : category,
             phrase : phrase,
             header : header,
-            currentPage : 1
+            currentPage : 1,
+            metaDescription : metaDescription
         });
     });
 });
@@ -129,6 +141,7 @@ app.get('/image/:fileName', async (req, res) => {
     let { fileName } = req.params;
     var header = getImagesCategoryHeader();
     let images = await db.collection('Images').find({ fileName : fileName }).toArray();
+    let metaDescription = `Imagem para status. Frase: ${images[0].phrase}`;
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
-    res.render('single-image', { images : images, categories : categories, header : header });
+    res.render('single-image', { images : images, categories : categories, header : header, metaDescription : metaDescription });
 });
