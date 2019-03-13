@@ -1,7 +1,7 @@
 const app = require('../config/express');
 const ObjectId = require('mongodb').ObjectID;
 
-app.locals.imagesPerPage = 3;
+app.locals.imagesPerPage = 15;
 
 async function checkIfCategoryExists(req, res, next) {
     let { category } = req.params;
