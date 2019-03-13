@@ -11,8 +11,11 @@ app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/../public/'));
 function wwwRedirect(req, res, next) {
     if(!process.env.AMBIENTE == 'development'){
-        if (req.headers.host.slice(0, 4) === 'www.') {
+        if (req.headers.host.slice(0, 4) === 'www.' && (req.protocol == 'http' || req.protocol == 'https')) {
             var newHost = req.headers.host.slice(4);
+            return res.redirect(301, 'https' + '://' + newHost + req.originalUrl);
+        } else {
+            var newHost = req.headers.host;
             return res.redirect(301, 'https' + '://' + newHost + req.originalUrl);
         }
     }
