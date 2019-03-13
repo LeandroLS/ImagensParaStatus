@@ -20,7 +20,7 @@ async function checkIfCategoryExists(req, res, next) {
 function getImagesCategoryHeader(category = null){
     let header = 'Imagens Para Status';
     if(category) {
-        header = `Imagens da categoria: ${category}`;
+        header = `Imagens relacionadas a ${category}`;
     }
     return header;
 }
@@ -127,7 +127,8 @@ app.get('/:category?/page/:number', async (req, res) => {
 app.get('/image/:fileName', async (req, res) => {
     let db = app.locals.db;
     let { fileName } = req.params;
+    var header = getImagesCategoryHeader();
     let images = await db.collection('Images').find({ fileName : fileName }).toArray();
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
-    res.render('single-image', { images : images, categories : categories });
+    res.render('single-image', { images : images, categories : categories, header : header });
 });
