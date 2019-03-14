@@ -10,7 +10,7 @@ app.set('views', path.viewsPath);
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/../public/'));
 function wwwRedirect(req, res, next) {
-    return res.redirect(301, 'https://imagensparastatus.com.br');
+    return res.redirect(301, req.protocol + '://' + 'imagensparastatus.com.br' + req.originalUrl);
 };
 
 app.set('trust proxy', true);
