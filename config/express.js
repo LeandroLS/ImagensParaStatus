@@ -14,9 +14,9 @@ function wwwRedirect(req, res, next) {
     if(process.env.AMBIENTE == 'production'){
         if (req.headers.host.slice(0, 4) === 'www.') {
             var newHost = req.headers.host.slice(4);
-            return res.redirect(301, 'https' + '://' + newHost + req.originalUrl);
+            return res.redirect(301, req.protocol + '://' + newHost + req.originalUrl);
         } else {
-            return res.redirect(301, 'https' + '://' + req.headers.host + req.originalUrl);
+            return res.redirect(301, req.protocol + '://' + req.headers.host + req.originalUrl);
         }
     }
     next();
