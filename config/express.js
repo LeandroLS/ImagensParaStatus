@@ -10,17 +10,13 @@ app.set('views', path.viewsPath);
 app.set('view engine', 'pug');
 app.use(express.static(__dirname + '/../public/'));
 function wwwRedirect(req, res, next) {
-    console.log('wwwRedirect() ambiente:', process.env.AMBIENTE);
-    if(process.env.AMBIENTE == 'production'){
-        if (req.headers.host.slice(0, 4) === 'www.') {
-            var newHost = req.headers.host.slice(4);
-            return res.redirect(301, req.protocol + '://' + newHost + req.originalUrl);
-        } else {
-            return res.redirect(301, req.protocol + '://' + req.headers.host + req.originalUrl);
-        }
+    if (req.headers.host.slice(0, 4) === 'www.') {
+        var newHost = req.headers.host.slice(4);
+        return res.redirect(301, req.protocol + '://' + newHost + req.originalUrl);
     }
     next();
 };
+
 app.set('trust proxy', true);
 app.use(wwwRedirect);
 app.use(compression());
