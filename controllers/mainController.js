@@ -17,6 +17,7 @@ async function checkIfCategoryExists(req, res, next) {
         return res.render('404');
     }
 }
+
 function getImagesCategoryHeader(category = null){
     let header = 'Imagens Para Compartilhar';
     if(category) {
@@ -25,6 +26,13 @@ function getImagesCategoryHeader(category = null){
     return header;
 }
 
+function getTitleDescription(category = null){
+    let title = 'Imagens Para Status';
+    if(category) {
+        title = `Imagens com frases de ${category}`;
+    }
+    return title;
+}
 function getMetaDescription($category = null){
     var description = '';
     if($category){
@@ -60,6 +68,7 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
     if(phrase){
         filter = { phrase: {$regex: `.*${phrase}.*`, $options:'i'}};
     }
+    let title = getTitleDescription(category);
     let header = getImagesCategoryHeader(category);
     let imagesPerPage = app.locals.imagesPerPage;
     let metaDescription = getMetaDescription(category);
@@ -76,7 +85,8 @@ app.get('/:category?', checkIfCategoryExists, async (req, res) => {
             phrase : phrase,
             header : header,
             currentPage : 1,
-            metaDescription : metaDescription
+            metaDescription : metaDescription,
+            title : title
         });
     });
 });
@@ -140,8 +150,15 @@ app.get('/image/:fileName', async (req, res) => {
     let db = app.locals.db;
     let { fileName } = req.params;
     var header = getImagesCategoryHeader();
+    let title = getTitleDescription();
     let images = await db.collection('Images').find({ fileName : fileName }).toArray();
     let metaDescription = `Imagem para status. Frase: ${images[0].phrase}`;
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
-    res.render('single-image', { images : images, categories : categories, header : header, metaDescription : metaDescription });
+    res.render('single-image', { 
+        images : images, 
+        categories : categories, 
+        header : header, 
+        metaDescription : metaDescription,
+        title : title
+    });
 });
