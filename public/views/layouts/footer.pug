@@ -8,3 +8,11 @@ footer(class="footer margin-top-1pct bg-azul")
                         li.list-inline-item: a(href="/privacidade" class="font-weight-bold") Privacidade
                         li.list-inline-item: a(href="/sobre" class="font-weight-bold") Sobre
     include default-js.pug
+    script.
+        $(document).ready(() => {
+            var token = window.localStorage.getItem('token');
+            if(token){
+                $("#adminLink").attr('href', `/admin/dashboard?token=${token}`);
+                $("#adminLink").parent().show();
+            }
+        });

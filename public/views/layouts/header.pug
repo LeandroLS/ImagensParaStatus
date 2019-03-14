@@ -15,12 +15,3 @@
         </form>
     </div>
 </nav>
-<script src="/js/jquery.min.js"></script>
-script.
-    $(document).ready(() => {
-        var token = window.localStorage.getItem('token');
-        if(token){
-            $("#adminLink").attr('href', `/admin/dashboard?token=${token}`);
-            $("#adminLink").parent().show();
-        }
-    });
