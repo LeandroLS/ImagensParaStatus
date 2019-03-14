@@ -13,7 +13,8 @@ function wwwRedirect(req, res, next) {
     if (req.headers.host.slice(0, 4) === 'www.') {
         var newHost = req.headers.host.slice(4);
         return res.redirect(301, 'https://' + newHost + req.originalUrl);
-    } else {
+    }
+    if(req.headers.host.slice(0, 4) !== 'www.'){
         return res.redirect(301, 'https://' + req.headers.host + req.originalUrl);
     }
     next();
