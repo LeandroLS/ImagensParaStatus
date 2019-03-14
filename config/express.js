@@ -16,7 +16,7 @@ function wwwRedirect(req, res, next) {
             var newHost = req.headers.host.slice(4);
             return res.redirect(301, 'https' + '://' + newHost + req.originalUrl);
         } else {
-            return res.redirect(301, 'https' + '://' + 'imagensparastatus.com.br' + req.originalUrl);
+            return res.redirect(301, 'https' + '://' + req.headers.host + req.originalUrl);
         }
     }
     next();
