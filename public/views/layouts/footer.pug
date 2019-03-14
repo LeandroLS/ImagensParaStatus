@@ -7,7 +7,28 @@ footer(class="footer margin-top-1pct bg-azul")
                     ul(class="list-group list-group-horizontal")
                         li.list-inline-item: a(href="/privacidade" class="font-weight-bold") Privacidade
                         li.list-inline-item: a(href="/sobre" class="font-weight-bold") Sobre
+    script(src="/js/popper.min.js")
     include default-js.pug
+    include facebookSDK.pug
+    script(src="/js/clipboard.min.js")
+    script(src="/js/jquery.lazy.min.js")
+    noscript#deferred-styles
+        <link rel="stylesheet" href="/css/bootstrap-reboot4.3.1.min.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/solid.css" integrity="sha384-r/k8YTFqmlOaqRkZuSiE9trsrDXkh07mRaoGBMoDcmA58OHILZPsk29i2BsFng1B" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/brands.css" integrity="sha384-BKw0P+CQz9xmby+uplDwp82Py8x1xtYPK3ORn/ZSoe6Dk3ETP59WCDnX+fI1XCKK" crossorigin="anonymous">
+        link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.2/css/fontawesome.css' integrity='sha384-4aon80D8rXCGx9ayDt85LbyUHeMWd3UiBaWliBlJ53yzm9hqN21A+o1pqoyK04h+' crossorigin='anonymous')
+    script.
+        var loadDeferredStyles = function() {
+        var addStylesNode = document.getElementById("deferred-styles");
+        var replacement = document.createElement("div");
+        replacement.innerHTML = addStylesNode.textContent;
+        document.body.appendChild(replacement);
+        addStylesNode.parentElement.removeChild(addStylesNode);
+        };
+        var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+        if (raf) raf(function() { window.setTimeout(loadDeferredStyles, 0); });
+        else window.addEventListener('load', loadDeferredStyles);
     script.
         $(document).ready(() => {
             var token = window.localStorage.getItem('token');
