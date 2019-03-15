@@ -26,7 +26,7 @@
                 each image in images
                     div.card(class="margin-bottom-1pct"): div.card-body
                         p.blockquote
-                            a(href=`/image/${image.fileName}`): img(src="", data-src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
+                            a(href=`/image/${image.fileName}`): img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid", title=`${image.phrase}`)
                         .row
                             .col-md-8
                                 p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
@@ -112,14 +112,14 @@ script.
     new ClipboardJS('.copyToClipBoard');
     $(function () {
         renderPaginationBar();
-        $('.lazy').lazy({
-            effect: "fadeIn",
-            effectTime: 2000,
-            threshold: 0,
-            beforeLoad: function(element){
-                $(element).attr('src', '');
-            }
-        });
+        //- $('.lazy').lazy({
+        //-     effect: "fadeIn",
+        //-     effectTime: 2000,
+        //-     threshold: 0,
+        //-     beforeLoad: function(element){
+        //-         $(element).attr('src', '');
+        //-     }
+        //- });
         $('[data-toggle="tooltip"]').tooltip();
         $('.copyToClipBoard').on('click', function() {
             $(this).tooltip('hide');
