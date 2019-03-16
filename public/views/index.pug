@@ -14,6 +14,7 @@
     meta(name="description" content=`${metaDescription}`)
     include layouts/title.pug
     include layouts/default-css.pug
+    include layouts/facebookOG.pug
 </head>
 
 <body>
@@ -36,7 +37,7 @@
                                         button(class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
                                             <i class="fab fa-whatsapp"></i>
                                     li.list-inline-item
-                                        button(class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook", onclick="window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('localhost:9090'),'facebook-share-dialog','width=626, height=436'); return false;"): span
+                                        a(href=`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${image.fileName}` class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank"): span
                                             <i class="fab fa-facebook"></i>
                                     li.list-inline-item
                                         button(class="btn btn-sm hover-white", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span

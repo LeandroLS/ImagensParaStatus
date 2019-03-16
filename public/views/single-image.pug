@@ -25,7 +25,7 @@ html(lang="pt-br")
                         each image in images
                             div.card(class="margin-bottom-1pct"): div.card-body
                                 p.blockquote
-                                    a(href=``): img(src=`/images/original-images/${image.fileName}`, data-src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
+                                    a(href=``): img(src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
                                 .row
                                     .col-md-8
                                         p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
@@ -54,16 +54,16 @@ html(lang="pt-br")
                         div.alert.alert-warning Nenhuma imagem encontrada.
                 .col-md-3
                     include layouts/categories.pug
-    include layouts/footer.pug
-    include layouts/facebookSDK.pug
-    script(src="/js/clipboard.min.js")
-    script.
-        new ClipboardJS('.copyToClipBoard');
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-            $('.copyToClipBoard').on('click', function() {
-                $(this).tooltip('hide');
-                $(this).attr('data-original-title', 'Frase copiada! :)');
-                $(this).tooltip('show');
+        include layouts/footer.pug
+        include layouts/facebookSDK.pug
+        script(src="/js/clipboard.min.js")
+        script.
+            new ClipboardJS('.copyToClipBoard');
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('.copyToClipBoard').on('click', function() {
+                    $(this).tooltip('hide');
+                    $(this).attr('data-original-title', 'Frase copiada! :)');
+                    $(this).tooltip('show');
+                });
             });
-        });
