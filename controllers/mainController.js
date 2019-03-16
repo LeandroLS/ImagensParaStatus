@@ -70,12 +70,12 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     if(phrase){
         filter = { phrase: {$regex: `.*${phrase}.*`, $options:'i'}};
     }
-    let title = getTitleDescription(category);
-    let header = getImagesCategoryHeader(category);
-    let metaDescription = getMetaDescription(category);
+    let title = getTitleDescription((category ? category[0].category : null ));
+    let header = getImagesCategoryHeader((category ? category[0].category : null ));
+    let metaDescription = getMetaDescription((category ? category[0].category : null ));
     let imagesPerPage = app.locals.imagesPerPage;
     let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
-    let images = await db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
+    let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray().then(images => images);
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
     Promise.all([numberOfPages, images, categories]).then(data => {
         return res.render('index', {
