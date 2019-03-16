@@ -5,6 +5,7 @@ const upload = require('../config/upload');
 const { rename, unlink } = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const util = require('../libs/util');
 function verifyToken(req, res, next){
     let token = req.body.token || req.query.token;
     if(req.path == '/login' || req.path == '/auth' || req.path == '/upload-images') return next();
@@ -99,22 +100,24 @@ app.post('/admin/upload-images', upload.single('image'), verifyTokenUploadImages
     if(existentCategory != ''){
         category = existentCategory;
     }
-    let phrases = await db.collection('Phrases').find({ phrase : phrase }).toArray();
     try {
-        if(phrases.length == 0){
+        let phrases = await db.collection('Phrases').find({ phrase : phrase }).toArray();
+        if(phrases.length >= 1){
+            throw new Error("Frase já existe.");
+        } else if(phrases.length == 0) {
             db.collection('Phrases').insertOne({
                 phrase: phrase,
                 category: category,
                 fileName: filename
             });
-        } else {
-            throw new Error("Frase já existe.");
         }
 
         let categorias = await db.collection('Categories').find({category : category}).toArray();
         if(categorias.length == 0){
+            let urlName = util.urlFriendlyer(category);
             await db.collection('Categories').insertOne({
-                category : category
+                category : category,
+                urlName : urlName
             });
         }
 
@@ -138,6 +141,7 @@ app.post('/admin/upload-images', upload.single('image'), verifyTokenUploadImages
             if(err) console.log(err);
             console.log('Arquivo removido');
         });
+        console.error('Algum erro aconteceu:', erro);
         let result = {
             success: false,
             message: 'Frase já existe'

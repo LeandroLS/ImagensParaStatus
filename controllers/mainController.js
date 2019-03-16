@@ -3,13 +3,13 @@ const app = require('../config/express');
 app.locals.imagesPerPage = 15;
 
 async function checkIfCategoryExists(req, res, next) {
-    let { category } = req.params;
-    if(typeof category === 'undefined'){
+    let { categoryUrlName } = req.params;
+    let db = app.locals.db;
+    if(typeof categoryUrlName === 'undefined'){
         return next();
     }
-    let db = app.locals.db;
     let categories = await db.collection('Categories').find().toArray();
-    let categoriesFilter = categories.filter(value => value.category == category);
+    let categoriesFilter = categories.filter(value => value.urlName == categoryUrlName);
     if(categoriesFilter.length >= 1){
         return next();
     } else {
@@ -58,21 +58,22 @@ app.get('/sobre', async (req, res) => {
     res.render('sobre', { categories : categories});
 });
 
-app.get('/:category?', checkIfCategoryExists, async (req, res) => {
+app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     let { phrase } = req.query;
-    let { category } = req.params;
+    let { categoryUrlName } = req.params;
+    let db = app.locals.db;
     var filter = {};
-    if(category){
-        filter = { category : category };
+    if(categoryUrlName){
+        var category = await db.collection('Categories').find({urlName : categoryUrlName}).toArray();
+        filter = { category : category[0].category };
     }
     if(phrase){
         filter = { phrase: {$regex: `.*${phrase}.*`, $options:'i'}};
     }
     let title = getTitleDescription(category);
     let header = getImagesCategoryHeader(category);
-    let imagesPerPage = app.locals.imagesPerPage;
     let metaDescription = getMetaDescription(category);
-    let db = app.locals.db;
+    let imagesPerPage = app.locals.imagesPerPage;
     let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).toArray().then(images => images);
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);

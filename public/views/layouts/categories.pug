@@ -1,0 +1,6 @@
+if(categories)
+    <ul class="list-group">
+        li.list-group-item.bg-azul-2.text-white.text-center Categorias
+        for category in categories
+            li.list-group-item: a(href=`/${category.urlName}`) #{category.category} 
+    </ul>

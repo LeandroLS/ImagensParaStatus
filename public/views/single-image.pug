@@ -16,7 +16,7 @@ html(lang="pt-br")
         include layouts/default-css.pug
     body
         header
-            include layouts/header.pug
+            include layouts/navbar-header
         .container
             .row(class="margin-top-1pct")
                 .col-md-9
@@ -53,12 +53,7 @@ html(lang="pt-br")
                     else
                         div.alert.alert-warning Nenhuma imagem encontrada.
                 .col-md-3
-                    if(categories)
-                        <ul class="list-group">
-                            li.list-group-item.bg-azul-2.text-white.text-center Categorias
-                            for category in categories
-                                li.list-group-item: a(href=`/${category.category}`) #{category.category} 
-                        </ul>
+                    include layouts/categories.pug
     include layouts/footer.pug
     include layouts/facebookSDK.pug
     script(src="/js/clipboard.min.js")

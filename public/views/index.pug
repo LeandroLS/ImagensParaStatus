@@ -18,7 +18,7 @@
 
 <body>
     header
-        include layouts/header.pug
+        include layouts/navbar-header
     .container: .row(class="margin-top-1pct")
         .col-md-9
             .text-center.border.rounded(class="margin-bottom-1pct"): h1.text-white= header
@@ -60,12 +60,7 @@
                         </ul>
                     </nav>
         .col-md-3
-            if(categories)
-                <ul class="list-group">
-                    li.list-group-item.bg-azul-2.text-white.text-center Categorias
-                    for category in categories
-                        li.list-group-item: a(href=`/${category.category}`) #{category.category} 
-                </ul>
+            include layouts/categories.pug
         <a href="javascript:" class="btn btn-sm bg-azul-2 hover-white" id="backToTop" onclick="returnToTop()" title="Voltar para o topo">
             <i class="fas fa-arrow-up"></i>
         </a>

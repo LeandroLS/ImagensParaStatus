@@ -14,7 +14,7 @@ html(lang="pt-br")
         <title>Imagens Para Status - Sobre esta página</title>
         include layouts/default-css.pug
     body
-        include layouts/header.pug
+        include layouts/navbar-header
         .container
             .row(class="margin-top-1pct")
                 .col-md-9
@@ -27,10 +27,5 @@ html(lang="pt-br")
                             <p>Todos os dias publicamos novas imagens.</p>
                 </div>
                 .col-md-3
-                    if(categories)
-                        <ul class="list-group">
-                            li.list-group-item.bg-azul-2.text-white.text-center Categorias
-                            for category in categories
-                                li.list-group-item: a(href=`/${category.category}`) #{category.category} 
-                        </ul>
+                    include layouts/categories.pug
         include layouts/footer.pug

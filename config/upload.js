@@ -1,6 +1,6 @@
 const mime = require('mime-types');
 const multer = require('multer');
-const moment = require('moment');
+const util = require('../libs/util');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/images/original-images');
@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         let { category, phrase, existentCategory } = req.body;
         category = category || existentCategory;
-        cb(null, `${category}-${phrase.slice(0,25)}.${mime.extension(file.mimetype)}`);
+        cb(null, `${util.urlFriendlyer(category)}-${util.urlFriendlyer(phrase.slice(0,25))}.${mime.extension(file.mimetype)}`);
     }
 });
 
