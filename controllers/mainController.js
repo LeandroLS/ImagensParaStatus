@@ -27,7 +27,7 @@ function getImagesCategoryHeader(category = null){
 }
 
 function getTitleDescription(category = null){
-    let title = 'Imagens Para Status - Diversas imagens para compartilhar';
+    let title = 'Imagens Para Status - Diversas imagens e frases para compartilhar';
     if(category) {
         title = `Imagens com frases de ${category}`;
     }
