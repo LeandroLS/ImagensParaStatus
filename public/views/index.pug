@@ -37,7 +37,7 @@
                                         button(class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
                                             <i class="fab fa-whatsapp"></i>
                                     li.list-inline-item
-                                        a(href=`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${image.fileName}` class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank"): span
+                                        button(class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank" onclick=`changeOGProp('${image.fileName}')`): span
                                             <i class="fab fa-facebook"></i>
                                     li.list-inline-item
                                         button(class="btn btn-sm hover-white", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
@@ -69,6 +69,11 @@
 </body>
 
 script.
+    function changeOGProp(fileName){
+        $("#url").attr('content', `https://imagensparastatus.com.br/image/${fileName}`);
+        $("#image").attr('content', `https://imagensparastatus.com.br/images/original-images/${fileName}`);
+        window.open(`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${fileName}`);
+    }
     function returnToTop(){
         $('body,html').animate({
             scrollTop : 0
