@@ -14,7 +14,7 @@
     meta(name="description" content=`${metaDescription}`)
     include layouts/title.pug
     include layouts/default-css.pug
-    include layouts/facebookOG.pug
+    //- include layouts/facebookOG.pug
 </head>
 
 <body>
@@ -27,7 +27,7 @@
                 each image in images
                     div.card(class="margin-bottom-1pct"): div.card-body
                         p.blockquote
-                            a(href=`/image/${image.fileName}`): img(src="/images/loading.gif", data-src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
+                            a(href=`/image/${image.fileName}`): img(src="/loading.gif", data-src=`/images/original-images/${image.fileName}`, alt=`${image.phrase}`, class="img-fluid lazy", title=`${image.phrase}`)
                         .row
                             .col-md-8
                                 p(class="card-text" id=`frase-${image.id}`) #{image.phrase}
@@ -37,7 +37,7 @@
                                         button(class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
                                             <i class="fab fa-whatsapp"></i>
                                     li.list-inline-item
-                                        button(class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank" onclick=`changeOGProp('${image.fileName}')`): span
+                                        a(href=`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${image.fileName}` class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank"): span
                                             <i class="fab fa-facebook"></i>
                                     li.list-inline-item
                                         button(class="btn btn-sm hover-white", style="background-color: #bd081c" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Pinterest"): span
@@ -69,17 +69,6 @@
 </body>
 
 script.
-    function changeOGProp(fileName){
-        //- $("#url").attr('content', `https://imagensparastatus.com.br/image/${fileName}`);
-        //- $("#image").attr('content', `https://imagensparastatus.com.br/images/original-images/${fileName}`);
-        //- window.open(`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${fileName}`);
-        let imageUrl = encodeURIComponent(`https://imagensparastatus.com.br/images/original-images/${fileName}`);
-        let shareTitle = encodeURIComponent('Imagens Para Status');
-        let desc = encodeURIComponent('Diversas frases e imagens para compartilhar :D');
-        let url = encodeURIComponent(`https://imagensparastatus.com.br/image/${fileName}`);
-
-        window.open('http://www.facebook.com/sharer.php?s=100&p[title]=' + shareTitle + '&p[summary]=' + desc + '&p[url]=' + url + '&p[images][0]=' + imageUrl + '', 'sharer', 'toolbar=0,status=0,width=626,height=436');
-    }
     function returnToTop(){
         $('body,html').animate({
             scrollTop : 0

@@ -33,6 +33,16 @@ function getTitleDescription(category = null){
     }
     return title;
 }
+
+function facebookOGManipulator(image){
+    console.log(image);
+    let OGproperties = {};
+    OGproperties.url = 'https://imagensparastatus.com.br/image/' + image.fileName;
+    OGproperties.title = 'Imagens Para Status';
+    OGproperties.description = image.phrase;
+    OGproperties.image = 'https://imagensparastatus.com.br/images/original-images/' + image.fileName;
+    return OGproperties;
+}
 function getMetaDescription($category = null){
     var description = '';
     if($category){
@@ -155,11 +165,13 @@ app.get('/image/:fileName', async (req, res) => {
     let images = await db.collection('Images').find({ fileName : fileName }).toArray();
     let metaDescription = `Imagem para status. Frase: ${images[0].phrase}`;
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
+    let OGpropertiesFacebook = facebookOGManipulator(images[0]);
     res.render('single-image', { 
         images : images, 
         categories : categories, 
         header : header, 
         metaDescription : metaDescription,
-        title : title
+        title : title,
+        OGpropertiesFacebook : OGpropertiesFacebook
     });
 });
