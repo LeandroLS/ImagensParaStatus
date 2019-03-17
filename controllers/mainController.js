@@ -35,12 +35,11 @@ function getTitleDescription(category = null){
 }
 
 function facebookOGManipulator(image){
-    console.log(image);
     let OGproperties = {};
-    OGproperties.url = 'https://imagensparastatus.com.br/image/' + image.fileName;
+    OGproperties.url = 'https://imagensparastatus.com.br/image/' + encodeURIComponent(image.fileName);
     OGproperties.title = 'Imagens Para Status';
     OGproperties.description = image.phrase;
-    OGproperties.image = 'https://imagensparastatus.com.br/images/original-images/' + image.fileName;
+    OGproperties.image = 'https://imagensparastatus.com.br/images/original-images/' + encodeURIComponent(image.fileName);
     return OGproperties;
 }
 function getMetaDescription($category = null){
