@@ -37,7 +37,7 @@ function getTitleDescription(category = null){
 function facebookOGManipulator(image){
     let OGproperties = {};
     OGproperties.url = 'https://imagensparastatus.com.br/image/' + encodeURIComponent(image.fileName);
-    OGproperties.title = 'Imagens Para Status';
+    OGproperties.title = 'Imagens Para Status - Diversas imagens para compartilhar nos status do whatsapp, facebook, pinterest e etc!';
     OGproperties.description = image.phrase;
     OGproperties.image = 'https://imagensparastatus.com.br/images/original-images/' + encodeURIComponent(image.fileName);
     return OGproperties;
@@ -45,9 +45,9 @@ function facebookOGManipulator(image){
 function getMetaDescription($category = null){
     var description = '';
     if($category){
-        description = `Imagens para compartilhar nos status das redes sociais relacionadas a ${$category}`;
+        description = `Imagens para compartilhar nos status do whatsapp, facebook, pinterest relacionadas a ${$category}`;
     } else {
-        description = 'Imagens Para Status. Diversas imagens para compartilhar nos status das redes sociais! :D'
+        description = 'Imagens Para Status. Diversas imagens para compartilhar nos status do whatsapp, facebook, pinterest e etc! :D';
     }
     return description;
 }
