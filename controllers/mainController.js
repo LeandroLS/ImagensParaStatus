@@ -27,9 +27,9 @@ function getImagesCategoryHeader(category = null){
 }
 
 function getTitleDescription(category = null){
-    let title = 'Imagens Para Status - Diversas imagens e frases para compartilhar';
+    let title = 'Imagens Para Status. Diversas imagens para compartilhar nos status do whatsapp, facebook, pinterest e etc! :D';
     if(category) {
-        title = `Imagens com frases de ${category}`;
+        title = `Imagens com frases de ${category} para compartilhar nos status do whatsapp, facebook, pinterest e etc! :D`;
     }
     return title;
 }
