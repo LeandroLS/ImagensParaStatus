@@ -7,3 +7,4 @@ Disallow: /node_modules/
 Disallow: /modules/
 Disallow: /libs/
 Disallow: /config/
+Sitemap: https://imagensparastatus.com.br/sitemap.xml
