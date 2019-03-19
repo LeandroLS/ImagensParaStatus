@@ -58,6 +58,13 @@ script.
             scrollTop : 0
         }, 500);
     }
+    function setPaginationTags(currentPage, neighborPage){
+        if(currentPage > neighborPage){
+            return "rel='prev'";
+        } else if (currentPage < neighborPage) {
+            return "rel='next'";
+        }
+    }
     function renderPaginationBar(){
         let intervalPages = 3;
         let category = "#{categoryPagination}";
@@ -82,9 +89,15 @@ script.
             endPage = numberOfPages;
         }
         for(var iterator = startPage; iterator <= endPage; iterator++){
+            let oneLessOrHigher = iterator - currentPage;
+            if(oneLessOrHigher == 1 || oneLessOrHigher == -1){
+                var paginationTag = setPaginationTags(currentPage, iterator);
+            } else {
+                var paginationTag = '';
+            }
             $("#paginationBar").append(`
                 <li class="page-item"> 
-                    <a class="page-link" href=${category}/page/${iterator}${phrase}> ${iterator} </a>
+                    <a class="page-link" ${paginationTag} href=${category}/page/${iterator}${phrase}> ${iterator} </a>
                 </li>`
             );
         }

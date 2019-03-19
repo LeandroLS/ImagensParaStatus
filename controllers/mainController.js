@@ -1,6 +1,6 @@
 const app = require('../config/express');
 
-app.locals.imagesPerPage = 15;
+app.locals.imagesPerPage = 10;
 
 async function checkIfCategoryExists(req, res, next) {
     let { categoryUrlName } = req.params;
@@ -85,7 +85,7 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     let imagesPerPage = app.locals.imagesPerPage;
     let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray().then(images => images);
-    let categories = await db.collection('Categories').find().toArray().then(categories => categories);
+    let categories = await db.collection('Categories').find().sort({'name': -1}).toArray().then(categories => categories);
     Promise.all([numberOfPages, images, categories]).then(data => {
         return res.render('index', {
             numberOfPages : data[0],
