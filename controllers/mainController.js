@@ -165,12 +165,14 @@ app.get('/image/:fileName', async (req, res) => {
     let metaDescription = `Imagem para status. Frase: ${images[0].phrase}`;
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
     let OGpropertiesFacebook = facebookOGManipulator(images[0]);
+    let relatedImages = await db.collection('Images').find({ '_id' : { $ne: images[0]._id }, category : images[0].category }).limit(6).toArray();
     res.render('single-image', { 
         images : images, 
         categories : categories, 
         header : header, 
         metaDescription : metaDescription,
         title : title,
-        OGpropertiesFacebook : OGpropertiesFacebook
+        OGpropertiesFacebook : OGpropertiesFacebook,
+        relatedImages : relatedImages
     });
 });

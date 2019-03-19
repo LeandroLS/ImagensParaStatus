@@ -45,7 +45,20 @@ html(lang="pt-br")
                         div.alert.alert-warning Nenhuma imagem encontrada.
                 .col-md-3
                     include layouts/categories.pug
-       
+            if(relatedImages.length >= 1)
+                .row.margin-top-1pct
+                    .col-md-9
+                        h2.text-center.text-white.bg-azul-2 VEJA TAMBÉM
+                        .row.margin-top-1pct
+                            each relatedImage in relatedImages
+                                .col-md-6
+                                    div.card(class="margin-bottom-1pct"): div.card-body
+                                        p.blockquote
+                                            a(href=`/image/${relatedImage.fileName}`): img(src=`/images/original-images/${relatedImage.fileName}`, alt=`${relatedImage.phrase}`, class="img-fluid lazy", title=`${relatedImage.phrase}`)
+                                        .row: .col-md-12
+                                            p(class="card-text" id=`frase-${relatedImage.id}`) #{relatedImage.phrase}
+                                        <br>
+                                        <p class="card-text"> Categoria: #{relatedImage.category} </p>
         include layouts/footer.pug
         include layouts/facebookSDK.pug
         script(src="/js/clipboard.min.js")
