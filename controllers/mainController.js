@@ -121,7 +121,7 @@ app.get('/:category?/page/:number', async (req, res) => {
         var pageNumber = req.params.number;
         var imagesArray = new Array();
         var i = 1 ;
-        await db.collection('Images').find(filter).forEach(function (document) {
+        await db.collection('Images').find(filter).sort({'_id' : -1}).forEach(function (document) {
             document.id = i;
             imagesArray.push(document);
             i++;
