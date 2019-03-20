@@ -57,14 +57,23 @@ function calcNumberOfPages(qtdImages){
     return Math.ceil(qtdImages / imagesPerPage);
 }
 
+function geraCanonicalLink(url){
+    if(url == '/'){
+        return 'https://imagensparastatus.com.br';
+    }
+    return 'https://imagensparastatus.com.br'+url;
+}
+
 app.get('/privacidade', async (req, res) => {
-    res.render('privacidade');
+    let canonical = geraCanonicalLink(req.originalUrl);
+    res.render('privacidade', { canonical : canonical });
 });
 
 app.get('/sobre', async (req, res) => {
     let db = app.locals.db;
+    let canonical = geraCanonicalLink(req.originalUrl);
     let categories = await db.collection('Categories').find().toArray();
-    res.render('sobre', { categories : categories});
+    res.render('sobre', { categories : categories, canonical : canonical });
 });
 
 app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
@@ -86,6 +95,7 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray().then(images => images);
     let categories = await db.collection('Categories').find().sort({'name': -1}).toArray().then(categories => categories);
+    let canonical = geraCanonicalLink(req.originalUrl);
     Promise.all([numberOfPages, images, categories]).then(data => {
         return res.render('index', {
             numberOfPages : data[0],
@@ -96,7 +106,8 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
             header : header,
             currentPage : 1,
             metaDescription : metaDescription,
-            title : title
+            title : title,
+            canonical : canonical
         });
     });
 });
@@ -143,6 +154,7 @@ app.get('/:category?/page/:number', async (req, res) => {
     }
     let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
+    let canonical = geraCanonicalLink(req.originalUrl);
     Promise.all([categories, numberOfPages]).then(data => {
         return res.render('index', {
             images : images,
@@ -151,7 +163,8 @@ app.get('/:category?/page/:number', async (req, res) => {
             currentPage : pageNumber,
             categoryPagination : category,
             header : header,
-            phrase : phrase
+            phrase : phrase,
+            canonical : canonical
         });
     });
 });
@@ -166,6 +179,7 @@ app.get('/image/:fileName', async (req, res) => {
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
     let OGpropertiesFacebook = facebookOGManipulator(images[0]);
     let relatedImages = await db.collection('Images').find({ '_id' : { $ne: images[0]._id }, category : images[0].category }).limit(6).toArray();
+    let canonical = geraCanonicalLink(req.originalUrl);
     res.render('single-image', { 
         images : images, 
         categories : categories, 
@@ -173,6 +187,7 @@ app.get('/image/:fileName', async (req, res) => {
         metaDescription : metaDescription,
         title : title,
         OGpropertiesFacebook : OGpropertiesFacebook,
-        relatedImages : relatedImages
+        relatedImages : relatedImages,
+        canonical : canonical
     });
 });
