@@ -1,6 +1,6 @@
 const app = require('../config/express');
 
-app.locals.imagesPerPage = 10;
+app.locals.imagesPerPage = 15;
 
 async function checkIfCategoryExists(req, res, next) {
     let { categoryUrlName } = req.params;
@@ -27,9 +27,9 @@ function getImagesCategoryHeader(category = null){
 }
 
 function getTitleDescription(category = null){
-    let title = 'Imagens Para Status. Diversas imagens para compartilhar nos status do whatsapp, facebook, pinterest e etc! :D';
+    let title = 'Imagens Para Status. Diversas imagens para whatsapp, facebook, pinterest :D';
     if(category) {
-        title = `Imagens com frases de ${category} para compartilhar nos status do whatsapp, facebook, pinterest e etc! :D`;
+        title = `Imagens com frases de ${category} para whatsapp, facebook, pinterest e etc! :D`;
     }
     return title;
 }
@@ -47,7 +47,7 @@ function getMetaDescription($category = null){
     if($category){
         description = `Imagens para compartilhar nos status do whatsapp, facebook, pinterest relacionadas a ${$category}`;
     } else {
-        description = 'Imagens Para Status. Diversas imagens para compartilhar nos status do whatsapp, facebook, pinterest e etc! :D';
+        description = 'Imagens Para Status. Aqui você encontra diversas imagens para compartilhar. :D';
     }
     return description;
 }
