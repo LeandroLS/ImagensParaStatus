@@ -76,6 +76,7 @@ app.get('/:category?/page/:number', async (req, res) => {
     var filter = {};
     var filterNumberOfPages = {};
     var header = SEOHelper.getImagesCategoryHeader(category);
+    let metaDescription = SEOHelper.getMetaDescription(category);
     if(req.params.category){
         var category = req.params.category;
         filterNumberOfPages.category = category;
@@ -122,7 +123,8 @@ app.get('/:category?/page/:number', async (req, res) => {
             categoryPagination : category,
             header : header,
             phrase : phrase,
-            canonical : canonical
+            canonical : canonical,
+            metaDescription : metaDescription
         });
     });
 });

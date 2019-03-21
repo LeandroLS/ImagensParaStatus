@@ -5,7 +5,7 @@ router.get('/image/:fileName', async (req, res) => {
     let db = app.locals.db;
     let { fileName } = req.params;
     let images = await db.collection('Images').find({ fileName : fileName }).toArray();
-    let metaDescription = `Imagem para status. Frase: ${images[0].phrase}`;
+    let metaDescription = SEOHelper.getMetaDescription(images[0].category);
     let categories = await db.collection('Categories').find().toArray().then(categories => categories);
     let header = SEOHelper.getImagesCategoryHeader(images[0].category);
     let title = SEOHelper.getTitleDescription(images[0].category);
