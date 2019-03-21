@@ -21,7 +21,7 @@ html(lang="pt-br")
         .container
             .row(class="margin-top-1pct")
                 .col-md-9
-                    .text-center.border.rounded(class="margin-bottom-1pct"): h1.text-white= header
+                    .text-center.border.rounded(class="margin-bottom-1pct"): h1.azul-2= header
                     if(images.length >= 1)
                         each image in images
                             div.card(class="margin-bottom-1pct shadow"): div.card-body
@@ -48,7 +48,7 @@ html(lang="pt-br")
             if(relatedImages.length >= 1)
                 .row.margin-top-1pct
                     .col-md-9
-                        h2.text-center.text-white.bg-azul-2 VEJA TAMBÉM
+                        h2.text-center.text-white.bg-azul-2 Veja Também
                         .row.margin-top-1pct
                             each relatedImage in relatedImages
                                 .col-md-6

@@ -1,17 +1,15 @@
 link(rel="canonical" href=`${canonical}`)
 link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap-reboot.css")
-//- <link rel="stylesheet" href="/css/bootstrap-reboot4.3.1.min.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-//- <link rel="stylesheet" href="/css/bootstrap4.3.1.min.css">
 <link rel="shortcut icon" type="image/png" href="/images/favicon.ico"/>
 style(type="text/css").
     .margin-top-1pct { margin-top : 1% }
     .margin-bottom-1pct { margin-top : 1% }
-    .bg-azul { background-color: #5EC2D6 }
-    .bg-azul-2 { background-color: #58B6CC }
+    .bg-azul-2 { background-color: #207ce5 }
+    .azul-2 { color: #207ce5 }
     body { background: #dfe3ee }
     .hover-white:hover * { color: white }
-    h1 { text-shadow: -1px 0 #58B6CC, 0 1px #58B6CC, 1px 0 #58B6CC, 0 -1px #58B6CC; }
+    .hover-pinterest:hover * { color : #bd081c}
     #backToTop {
         position: fixed;
         bottom: 30px;
@@ -19,4 +17,12 @@ style(type="text/css").
         cursor: pointer;
         border: 0;
         opacity: .5;
+    }
+    .gradient {
+        background: -moz-linear-gradient(left, rgba(75,232,93,1) 0%, rgba(32,124,229,1) 100%);
+        background: -webkit-gradient(left top, right top, color-stop(0%, rgba(75,232,93,1)), color-stop(100%, rgba(32,124,229,1)));
+        background: -webkit-linear-gradient(left, rgba(75,232,93,1) 0%, rgba(32,124,229,1) 100%);
+        background: -o-linear-gradient(left, rgba(75,232,93,1) 0%, rgba(32,124,229,1) 100%);
+        background: -ms-linear-gradient(left, rgba(75,232,93,1) 0%, rgba(32,124,229,1) 100%);
+        background: linear-gradient(to right, rgba(75,232,93,1) 0%, rgba(32,124,229,1) 100%);
     }

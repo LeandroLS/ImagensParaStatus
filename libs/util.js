@@ -16,5 +16,4 @@ module.exports = {
         string = string.replace(/ /g, '-').toLowerCase();
         return string;
     }
-    
 }

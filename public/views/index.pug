@@ -23,7 +23,7 @@
         include layouts/navbar-header
     .container: .row(class="margin-top-1pct")
         .col-md-9
-            .text-center.border.rounded(class="margin-bottom-1pct"): h1.text-white= header
+            .text-center(class="margin-bottom-1pct"): h1.azul-2= header
             if(images.length >= 1)
                 each image in images
                     div.card(class="margin-bottom-1pct shadow"): div.card-body

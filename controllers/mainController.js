@@ -1,7 +1,6 @@
 const app = require('../config/express');
-
 app.locals.imagesPerPage = 15;
-
+const SEOHelper = require('../libs/SEOHelper');
 async function checkIfCategoryExists(req, res, next) {
     let { categoryUrlName } = req.params;
     let db = app.locals.db;
@@ -18,60 +17,19 @@ async function checkIfCategoryExists(req, res, next) {
     }
 }
 
-function getImagesCategoryHeader(category = null){
-    let header = 'Imagens Para Compartilhar';
-    if(category) {
-        header = `Imagens relacionadas a ${category}`;
-    }
-    return header;
-}
-
-function getTitleDescription(category = null){
-    let title = 'Imagens Para Status. Diversas imagens para whatsapp, facebook, pinterest :D';
-    if(category) {
-        title = `Imagens com frases de ${category} para whatsapp, facebook, pinterest e etc! :D`;
-    }
-    return title;
-}
-
-function facebookOGManipulator(image){
-    let OGproperties = {};
-    OGproperties.url = 'https://imagensparastatus.com.br/image/' + encodeURIComponent(image.fileName);
-    OGproperties.title = 'Imagens Para Status - Diversas imagens para compartilhar nos status do whatsapp, facebook, pinterest e etc!';
-    OGproperties.description = image.phrase;
-    OGproperties.image = 'https://imagensparastatus.com.br/images/original-images/' + encodeURIComponent(image.fileName);
-    return OGproperties;
-}
-function getMetaDescription($category = null){
-    var description = '';
-    if($category){
-        description = `Imagens para compartilhar nos status do whatsapp, facebook, pinterest relacionadas a ${$category}`;
-    } else {
-        description = 'Imagens Para Status. Aqui você encontra diversas imagens para compartilhar. :D';
-    }
-    return description;
-}
 
 function calcNumberOfPages(qtdImages){
     let imagesPerPage = app.locals.imagesPerPage;
     return Math.ceil(qtdImages / imagesPerPage);
 }
-
-function geraCanonicalLink(url){
-    if(url == '/'){
-        return 'https://imagensparastatus.com.br';
-    }
-    return 'https://imagensparastatus.com.br'+url;
-}
-
 app.get('/privacidade', async (req, res) => {
-    let canonical = geraCanonicalLink(req.originalUrl);
+    let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     res.render('privacidade', { canonical : canonical });
 });
 
 app.get('/sobre', async (req, res) => {
     let db = app.locals.db;
-    let canonical = geraCanonicalLink(req.originalUrl);
+    let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     let categories = await db.collection('Categories').find().toArray();
     res.render('sobre', { categories : categories, canonical : canonical });
 });
@@ -88,14 +46,14 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     if(phrase){
         filter = { phrase: {$regex: `.*${phrase}.*`, $options:'i'}};
     }
-    let title = getTitleDescription((category ? category[0].category : null ));
-    let header = getImagesCategoryHeader((category ? category[0].category : null ));
-    let metaDescription = getMetaDescription((category ? category[0].category : null ));
+    let title = SEOHelper.getTitleDescription((category ? category[0].category : null ));
+    let header = SEOHelper.getImagesCategoryHeader((category ? category[0].category : null ));
+    let metaDescription = SEOHelper.getMetaDescription((category ? category[0].category : null ));
     let imagesPerPage = app.locals.imagesPerPage;
     let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray().then(images => images);
     let categories = await db.collection('Categories').find().sort({'name': -1}).toArray().then(categories => categories);
-    let canonical = geraCanonicalLink(req.originalUrl);
+    let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     Promise.all([numberOfPages, images, categories]).then(data => {
         return res.render('index', {
             numberOfPages : data[0],
@@ -117,7 +75,7 @@ app.get('/:category?/page/:number', async (req, res) => {
     let { phrase } = req.query;
     var filter = {};
     var filterNumberOfPages = {};
-    var header = getImagesCategoryHeader(category);
+    var header = SEOHelper.getImagesCategoryHeader(category);
     if(req.params.category){
         var category = req.params.category;
         filterNumberOfPages.category = category;
@@ -154,7 +112,7 @@ app.get('/:category?/page/:number', async (req, res) => {
     }
     let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
-    let canonical = geraCanonicalLink(req.originalUrl);
+    let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     Promise.all([categories, numberOfPages]).then(data => {
         return res.render('index', {
             images : images,
@@ -166,28 +124,5 @@ app.get('/:category?/page/:number', async (req, res) => {
             phrase : phrase,
             canonical : canonical
         });
-    });
-});
-
-app.get('/image/:fileName', async (req, res) => {
-    let db = app.locals.db;
-    let { fileName } = req.params;
-    var header = getImagesCategoryHeader();
-    let title = getTitleDescription();
-    let images = await db.collection('Images').find({ fileName : fileName }).toArray();
-    let metaDescription = `Imagem para status. Frase: ${images[0].phrase}`;
-    let categories = await db.collection('Categories').find().toArray().then(categories => categories);
-    let OGpropertiesFacebook = facebookOGManipulator(images[0]);
-    let relatedImages = await db.collection('Images').find({ '_id' : { $ne: images[0]._id }, category : images[0].category }).limit(6).toArray();
-    let canonical = geraCanonicalLink(req.originalUrl);
-    res.render('single-image', { 
-        images : images, 
-        categories : categories, 
-        header : header, 
-        metaDescription : metaDescription,
-        title : title,
-        OGpropertiesFacebook : OGpropertiesFacebook,
-        relatedImages : relatedImages,
-        canonical : canonical
     });
 });
