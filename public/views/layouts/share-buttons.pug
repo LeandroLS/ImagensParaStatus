@@ -1,7 +1,7 @@
 ul(class="list-group list-group-horizontal")
     li.list-inline-item
-        //- a(href=`whatsapp://send?text=Para você:https://imagensparastatus.com.br/image/${encodeURIComponent(image.fileName)}` data-action="share/whatsapp/share" class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp"): span
-        //-     <i class="fab fa-whatsapp"></i>
+        a(href=`https://api.whatsapp.com/send?text=Para você: https://imagensparastatus.com.br/image/${encodeURIComponent(image.fileName)}` data-action="share/whatsapp/share" class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp" target="_blank"): span
+            <i class="fab fa-whatsapp"></i>
     li.list-inline-item
         a(href=`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${image.fileName}` class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank"): span
             <i class="fab fa-facebook"></i>
