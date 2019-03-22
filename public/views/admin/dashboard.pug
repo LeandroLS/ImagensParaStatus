@@ -12,14 +12,14 @@ html(lang="pt-br")
         .container
             if(message)
                 div.alert.alert-success #{message}
-            h1.text-center Dashboard
+            h1.text-center.azul-2 Dashboard
             .row
                 .col-md-4
-                    a(href=`/admin/images?token=${token}`) Imagens
+                    a(href=`/admin/images?token=${token}`, class="btn btn-primary") Imagens
                 .col-md-4
-                    a(href=`/admin/upload-images?token=${token}`) Upload Images
+                    a(href=`/admin/upload-images?token=${token}` class="btn btn-primary") Upload Images
                 .col-md-4
-                    a(href="http://") Categorias
+                    a(href="http://" class="btn btn-primary") Categorias
         include ../layouts/footer.pug
     script.
         window.localStorage.setItem('token', "#{token}");
