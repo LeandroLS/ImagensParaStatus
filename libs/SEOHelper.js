@@ -7,9 +7,9 @@ class SEOHelper {
         return header;
     }
     getTitleDescription(category = null){
-        let title = 'Imagens Para Status. Diversas imagens para whatsapp, facebook, pinterest :D';
+        let title = 'Imagens para status do whatsapp, facebook, pinterest e etc!';
         if(category) {
-            title = `Imagens com frases de ${category} para whatsapp, facebook, pinterest e etc! :D`;
+            title = `Imagens para status com frases de ${category} para whatsapp, facebook, pinterest e etc!`;
         }
         return title;
     }
