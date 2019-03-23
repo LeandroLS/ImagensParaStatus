@@ -9,8 +9,12 @@ footer(class="footer margin-top-1pct gradient")
                         li.list-inline-item: a(href="/sobre" class="font-weight-bold text-white") Sobre
             .col-md-6.margin-top-1pct
                 .offset-md-11
-                    ul.list-group: li.list-inline-item.hover-pinterest
+                    ul.list-group.list-group-horizontal
+                        li.list-inline-item.hover-pinterest
                             a(href="https://br.pinterest.com/imagensparastatus/" target="_blank" class="btn") <i class="fab fa-pinterest fa-3x"></i>
+                        li.list-inline-item.hover-pinterest
+                            a(href="https://www.facebook.com/sigaimagensparastatus/" target="_blank" class="btn") <i class="fab fa-facebook fa-3x"></i>
+            
     script(src="/js/popper.min.js")
     include default-js.pug
     include facebookSDK.pug
