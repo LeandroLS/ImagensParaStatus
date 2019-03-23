@@ -1,6 +1,7 @@
 const app = require('../config/express');
 app.locals.imagesPerPage = 15;
 const SEOHelper = require('../libs/SEOHelper');
+const paginationHelper = require('../libs/paginationHelper');
 async function checkIfCategoryExists(req, res, next) {
     let { categoryUrlName } = req.params;
     let db = app.locals.db;
@@ -16,7 +17,6 @@ async function checkIfCategoryExists(req, res, next) {
         return res.render('404');
     }
 }
-
 
 function calcNumberOfPages(qtdImages){
     let imagesPerPage = app.locals.imagesPerPage;
@@ -51,21 +51,21 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     let metaDescription = SEOHelper.getMetaDescription((category ? category[0].category : null ));
     let imagesPerPage = app.locals.imagesPerPage;
     let numberOfPages = await db.collection('Images').countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
+    let paginationNumbers = paginationHelper.getNumbersOfPagination(1,numberOfPages);
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray().then(images => images);
     let categories = await db.collection('Categories').find().sort({'name': -1}).toArray().then(categories => categories);
     let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
-    Promise.all([numberOfPages, images, categories]).then(data => {
+    Promise.all([images, categories]).then(data => {
         return res.render('index', {
-            numberOfPages : data[0],
-            images : data[1],
-            categories : data[2],
-            categoryPagination : category,
+            images : data[0],
+            categories : data[1],
+            categoryPagination : (category ? category[0].category : null ),
             phrase : phrase,
             header : header,
-            currentPage : 1,
             metaDescription : metaDescription,
             title : title,
-            canonical : canonical
+            canonical : canonical,
+            paginationNumbers : paginationNumbers
         });
     });
 });
@@ -111,20 +111,20 @@ app.get('/:category?/page/:number', async (req, res) => {
         }
         var images = await imagesArray.filter(filterImagesPerLastId);
     }
-    let numberOfPages = db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
+    let numberOfPages = await db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
-    Promise.all([categories, numberOfPages]).then(data => {
+    let paginationNumbers = paginationHelper.getNumbersOfPagination(pageNumber,numberOfPages);
+    Promise.all([categories]).then(data => {
         return res.render('index', {
             images : images,
             categories : data[0],
-            numberOfPages : data[1],
-            currentPage : pageNumber,
             categoryPagination : category,
             header : header,
             phrase : phrase,
             canonical : canonical,
-            metaDescription : metaDescription
+            metaDescription : metaDescription,
+            paginationNumbers : paginationNumbers
         });
     });
 });

@@ -40,10 +40,22 @@
                 div.alert.alert-warning Nenhuma imagem encontrada.
             .row.margin-top-1pct
                 .offset-md-4.col-md-4
-                    <nav>
-                        <ul class="pagination" id="paginationBar">
-                        </ul>
-                    </nav>
+                    if(paginationNumbers && paginationNumbers.pages.length >= 1)
+                        nav
+                            if !categoryPagination
+                                - categoryPagination = '';
+                            if !phrase
+                                - phrase = '';
+                            else
+                                - phrase = '?phrase=' + phrase
+                            ul.pagination
+                                if paginationNumbers.pages.length > 1 && paginationNumbers.prevPage
+                                    li.page-item: a.page-link(href=`${categoryPagination}/page/${paginationNumbers.prevPage}${phrase}` rel='prev'): <i class="fas fa-backward"></i>
+                                each val in paginationNumbers.pages
+                                    li.page-item
+                                        a.page-link(href=`${categoryPagination}/page/${val}${phrase}`)= val
+                                if paginationNumbers.pages.length > 1 && paginationNumbers.nextPage
+                                    li.page-item: a.page-link(href=`${categoryPagination}/page/${paginationNumbers.nextPage}${phrase}` rel='next'): <i class="fas fa-forward"></i>
         .col-md-3
             include layouts/categories.pug
         <a href="javascript:" class="btn btn-sm bg-azul-2 hover-white" id="backToTop" onclick="returnToTop()" title="Voltar para o topo">
@@ -57,50 +69,6 @@ script.
         $('body,html').animate({
             scrollTop : 0
         }, 500);
-    }
-    function setPaginationTags(currentPage, neighborPage){
-        if(currentPage > neighborPage){
-            return "rel='prev'";
-        } else if (currentPage < neighborPage) {
-            return "rel='next'";
-        }
-    }
-    function renderPaginationBar(){
-        let intervalPages = 3;
-        let category = "#{categoryPagination}";
-        if(!category){
-            category = '';
-        }
-        let phrase = "#{phrase}";
-        if(phrase){
-            phrase = '?phrase=' + phrase;
-        }
-        let currentPage = parseInt("#{currentPage}");
-        let numberOfPages = parseInt("#{numberOfPages}");
-        if(currentPage != undefined){
-            var startPage = currentPage - intervalPages;
-            var endPage = currentPage + intervalPages;
-        }
-        if(startPage <= 0) {
-            endPage = endPage - (startPage - 1);
-            startPage = 1;
-        }
-        if(endPage > numberOfPages){
-            endPage = numberOfPages;
-        }
-        for(var iterator = startPage; iterator <= endPage; iterator++){
-            let oneLessOrHigher = iterator - currentPage;
-            if(oneLessOrHigher == 1 || oneLessOrHigher == -1){
-                var paginationTag = setPaginationTags(currentPage, iterator);
-            } else {
-                var paginationTag = '';
-            }
-            $("#paginationBar").append(`
-                <li class="page-item"> 
-                    <a class="page-link" ${paginationTag} href=${category}/page/${iterator}${phrase}> ${iterator} </a>
-                </li>`
-            );
-        }
     }
     new ClipboardJS('.copyToClipBoard');
     $(function () {
