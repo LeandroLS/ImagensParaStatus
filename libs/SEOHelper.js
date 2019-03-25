@@ -9,7 +9,7 @@ class SEOHelper {
     getTitleDescription(category = null){
         let title = 'Imagens para status do whatsapp, facebook, pinterest e etc!';
         if(category) {
-            title = `Imagens para status com frases de ${category} para whatsapp, facebook, pinterest e etc!`;
+            title = `Imagens para status de ${category} para whatsapp, facebook, pinterest e etc!`;
         }
         return title;
     }
@@ -30,9 +30,9 @@ class SEOHelper {
     getMetaDescription($category = null){
         var description = '';
         if($category){
-            description = `Imagens para compartilhar nos status do whatsapp, facebook, pinterest relacionadas a ${$category}`;
+            description = `Imagens Para Status de ${$category}. Imagens com frases para compartilhar no whatsapp, facebook, pinterest.`;
         } else {
-            description = 'Imagens Para Status. Aqui você encontra diversas imagens para compartilhar. :D';
+            description = 'Imagens Para Status. Aqui você encontra diversas imagens com frases para compartilhar. :D';
         }
         return description;
     }
