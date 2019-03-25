@@ -47,11 +47,11 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
         let palavras = phrase.split(" ");
         var regex = '';
         if(palavras.length == 1){
-            regex =  `(?=.*${palavras[0]})`;
+            regex = `(?=.*${palavras[0]})`;
         } else {
-            regex = palavras.reduce(function(prev, current) {
-                return `(?=.*${prev})` + `(?=.*${current})`;
-            });
+            regex = palavras.map(element => {
+                return `(?=.*${element})`;
+            }).join('');
         }
         filter = { phrase: {$regex: `^${regex}.+`, $options:'i'}};
     }
