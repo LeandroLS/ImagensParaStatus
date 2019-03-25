@@ -58,7 +58,7 @@
                                     li.page-item: a.page-link(href=`${categoryPagination}/page/${paginationNumbers.nextPage}${phrase}` rel='next'): <i class="fas fa-forward"></i>
         .col-md-3
             include layouts/categories.pug
-        <a href="javascript:" class="btn btn-sm bg-azul-2 hover-white" id="backToTop" onclick="returnToTop()" title="Voltar para o topo">
+        <a href="javascript:" class="btn btn bg-azul-2 hover-white" id="backToTop" onclick="returnToTop()" title="Voltar para o topo">
             <i class="fas fa-arrow-up"></i>
         </a>
     include layouts/footer.pug
@@ -72,7 +72,6 @@ script.
     }
     new ClipboardJS('.copyToClipBoard');
     $(function () {
-        renderPaginationBar();
         $('[data-toggle="tooltip"]').tooltip();
         $('.copyToClipBoard').on('click', function() {
             $(this).tooltip('hide');

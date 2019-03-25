@@ -1,9 +1,9 @@
 ul(class="list-group list-group-horizontal")
     li.list-inline-item
-        a(href=`https://api.whatsapp.com/send?text=Para você: https://imagensparastatus.com.br/image/${encodeURIComponent(image.fileName)}` data-action="share/whatsapp/share" class="btn btn-sm hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp" target="_blank"): span
+        a(href=`https://api.whatsapp.com/send?text=Para você: https://imagensparastatus.com.br/image/${encodeURIComponent(image.fileName)}` data-action="share/whatsapp/share" class="btn btn hover-white", style="background-color: #25D366" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Whatsapp" target="_blank"): span
             <i class="fab fa-whatsapp"></i>
     li.list-inline-item
-        a(href=`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${image.fileName}` class="btn btn-sm hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank"): span
+        a(href=`http://www.facebook.com/sharer/sharer.php?u=https://imagensparastatus.com.br/image/${image.fileName}` class="btn btn hover-white share-fb", style="background-color: #3b5999" data-toggle="tooltip", data-placement="bottom", title="Compartilhar no Facebook" target="_blank"): span
             <i class="fab fa-facebook"></i>
     li.list-inline-item
         a(
@@ -12,7 +12,7 @@ ul(class="list-group list-group-horizontal")
             data-pin-description=`${image.phrase}`
             data-pin-do="buttonPin"
             data-pin-custom="true"
-            class="btn btn-sm hover-white"
+            class="btn btn hover-white"
             style="background-color: #bd081c"
             data-toggle="tooltip"
             data-pin-media=`https://imagensparastatus.com.br/images/original-images/${encodeURIComponent(image.fileName)}`
@@ -22,10 +22,10 @@ ul(class="list-group list-group-horizontal")
             span
                 <i class="fab fa-pinterest"></i>
     li.list-inline-item
-        button(class="btn btn-sm bg-azul-2 copyToClipBoard hover-white", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
+        button(class="btn btn bg-azul-2 copyToClipBoard hover-white", data-clipboard-target=`#frase-${image.id}`, data-toggle="tooltip", data-placement="bottom", title="Copiar frase")
             span
                 <i class="fas fa-copy"></i>
     li.list-inline-item
-        a(class="btn btn-sm bg-azul-2 hover-white", data-toggle="tooltip", data-placement="bottom", title="Baixar imagem" href=`/images/original-images/${image.fileName}` download=`${image.phrase.slice(0,30)}.jpg`)
+        a(class="btn btn bg-azul-2 hover-white", data-toggle="tooltip", data-placement="bottom", title="Baixar imagem" href=`/images/original-images/${image.fileName}` download=`${image.phrase.slice(0,30)}.jpg`)
             span
                 <i class="fas fa-download"></i>
