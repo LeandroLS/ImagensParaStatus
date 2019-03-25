@@ -44,7 +44,16 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
         filter = { category : category[0].category };
     }
     if(phrase){
-        filter = { phrase: {$regex: `.*${phrase}.*`, $options:'i'}};
+        let palavras = phrase.split(" ");
+        var regex = '';
+        if(palavras.length == 1){
+            regex =  `(?=.*${palavras[0]})`;
+        } else {
+            regex = palavras.reduce(function(prev, current) {
+                return `(?=.*${prev})` + `(?=.*${current})`;
+            });
+        }
+        filter = { phrase: {$regex: `^${regex}.+`, $options:'i'}};
     }
     let title = SEOHelper.getTitleDescription((category ? category[0].category : null ));
     let header = SEOHelper.getImagesCategoryHeader((category ? category[0].category : null ));
