@@ -2,12 +2,12 @@ class SEOHelper {
     getImagesCategoryHeader(category = null){
         let header = 'Imagens Para Compartilhar';
         if(category) {
-            header = `Imagens relacionadas a ${category}`;
+            header = `Imagens com frases de ${category}`;
         }
         return header;
     }
     getTitleDescription(category = null){
-        let title = 'Imagens para status do whatsapp, facebook, pinterest e etc!';
+        let title = 'Imagens para status pra whatsapp, facebook, pinterest e etc!';
         if(category) {
             title = `Imagens para status de ${category} para whatsapp, facebook, pinterest e etc!`;
         }
