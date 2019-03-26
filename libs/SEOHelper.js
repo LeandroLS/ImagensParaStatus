@@ -1,8 +1,8 @@
 class SEOHelper {
     getImagesCategoryHeader(category = null){
-        let header = 'Imagens Para Compartilhar';
+        let header = 'Imagens para status com frases';
         if(category) {
-            header = `Imagens com frases de ${category}`;
+            header = `Imagens para status com frases de ${category}`;
         }
         return header;
     }
