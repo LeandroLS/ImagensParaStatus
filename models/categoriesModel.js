@@ -9,5 +9,9 @@ module.exports = {
                 return false;
             }
         });
+    },
+    async getCategories(param = null){
+        let categories = await app.locals.db.collection('Categories').find(param).toArray();
+        return categories;
     }
 }
