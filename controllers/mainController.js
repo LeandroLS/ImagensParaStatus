@@ -125,6 +125,7 @@ app.get('/:category?/page/:number', async (req, res) => {
     let categories = db.collection('Categories').find().toArray().then(categories => categories);
     let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     let paginationNumbers = paginationHelper.getNumbersOfPagination(pageNumber,numberOfPages);
+    let title = SEOHelper.getTitleDescription((category ? category : null ));
     Promise.all([categories]).then(data => {
         return res.render('index', {
             images : images,
@@ -134,6 +135,7 @@ app.get('/:category?/page/:number', async (req, res) => {
             phrase : phrase,
             canonical : canonical,
             metaDescription : metaDescription,
+            title : title,
             paginationNumbers : paginationNumbers
         });
     });
