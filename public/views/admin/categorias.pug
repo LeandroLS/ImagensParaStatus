@@ -1,0 +1,28 @@
+html(lang="pt-br")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Imagem Para Status
+        include ../layouts/default-css.pug
+    body
+        header
+            include ../layouts/navbar-header
+        .container
+            if(categorias.length >=1)
+                if(message)
+                    if(success)
+                        div.alert.alert-success #{message}
+                    else if (!success)
+                        div.alert.alert-danger #{message}
+                form(method="post", action="/admin/categories/description")
+                    input(type="hidden", name="token", value=`${token}`)
+                    div.form-group
+                        label Categorias
+                        select.form-control(name="categoryUrlName")
+                            for categoria in categorias
+                                option(value=`${categoria.urlName}`) #{categoria.category}
+                    div.form-group
+                        textarea.form-control(name="description")
+                    button.btn.btn-success Salvar
+        include ../layouts/footer.pug

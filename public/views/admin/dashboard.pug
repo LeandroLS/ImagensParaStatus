@@ -19,7 +19,7 @@ html(lang="pt-br")
                 .col-md-4
                     a(href=`/admin/upload-images?token=${token}` class="btn btn-primary") Upload Images
                 .col-md-4
-                    a(href="http://" class="btn btn-primary") Categorias
+                    a(href=`/admin/categorias?token=${token}` class="btn btn-primary") Categorias
         include ../layouts/footer.pug
     script.
         window.localStorage.setItem('token', "#{token}");

@@ -10,14 +10,27 @@ function verifyToken(req, res, next){
     let token = req.body.token || req.query.token;
     if(req.path == '/login' || req.path == '/auth' || req.path == '/upload-images') return next();
     jwt.verify(token, auth.secret, (err, decoded) =>{
-        if (err) return res.send({ message : 'Token need to be provided' });
+        if (err) {
+            if(process.env.AMBIENTE == 'production'){
+                return res.redirect(301, 'https://' + req.headers.host + '/');
+            } else {
+                return res.redirect(301, 'http://' + req.headers.host + '/');
+            }
+        } 
         return next();
     });
 }
 async function verifyTokenUploadImages(req, res, next){
     let token = req.body.token || req.query.token;
     jwt.verify(token, auth.secret, (err, decoded) =>{
-        if (err) return res.send({ message : 'Token need to be provided' });
+        if (err) {
+            console.log(req.headers.host);
+            if(process.env.AMBIENTE == 'production'){
+                return res.redirect(301, 'https://' + req.headers.host + '/');
+            } else {
+                return res.redirect(301, 'http://' + req.headers.host + '/');
+            }
+        } 
         return next();
     });
 }
@@ -94,7 +107,7 @@ app.post('/admin/auth', (req, res) => {
     return res.redirect('/admin/dashboard?message=Logado com sucesso.&token=' + token);
 });
 app.post('/admin/upload-images', upload.single('image'), verifyTokenUploadImages, async (req, res) => {
-    let { originalname, filename } = req.file;
+    let { filename } = req.file;
     let { category, existentCategory, phrase, token } = req.body;
     let db = app.locals.db;
     if(existentCategory != ''){
@@ -123,7 +136,6 @@ app.post('/admin/upload-images', upload.single('image'), verifyTokenUploadImages
 
         let qtdImages = await db.collection('Images').countDocuments();
         await db.collection('Images').insertOne({
-            originalName: originalname, 
             fileName: filename,
             category: category,
             phrase: phrase,

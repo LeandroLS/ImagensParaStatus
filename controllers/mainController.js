@@ -69,6 +69,7 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
             images : data[0],
             categories : data[1],
             categoryPagination : (category ? category[0].category : null ),
+            categoryDescription : (category ? category[0].description : null ),
             phrase : phrase,
             header : header,
             metaDescription : metaDescription,

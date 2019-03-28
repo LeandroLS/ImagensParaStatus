@@ -1,7 +1,7 @@
 const express = require('express'), router = express.Router();
 const app = require('../config/express');
 const SEOHelper = require('../libs/SEOHelper');
-router.get('/image/:fileName', async (req, res) => {
+router.get('/:fileName', async (req, res) => {
     let db = app.locals.db;
     let { fileName } = req.params;
     let images = await db.collection('Images').find({ fileName : fileName }).toArray();
