@@ -12,5 +12,12 @@ module.exports = {
     async getImages(param = null){
         let images = await app.locals.db.collection('Images').find(param).toArray();
         return images;
+    },
+    async insertImage(param){
+        await app.locals.db.collection('Images').insertOne(param);
+    },
+    async countDocuments(){
+        let result = await app.locals.db.collection('Images').countDocuments();
+        return result;
     }
 }

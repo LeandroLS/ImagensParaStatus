@@ -1,10 +1,9 @@
 const express = require('express'), router = express.Router();
-const app = require('../config/express');
 const SEOHelper = require('../libs/SEOHelper');
 const { rename, unlink } = require('fs');
 const jwt = require('jsonwebtoken');
 const auth = require('../config/auth.json');
-const path = require('path');
+const { normalize } = require('path');
 const upload = require('../config/upload');
 const util = require('../libs/util');
 const imagesModel = require('../models/imagesModel');
@@ -14,7 +13,6 @@ async function verifyTokenUploadImages(req, res, next){
     let token = req.body.token || req.query.token;
     jwt.verify(token, auth.secret, (err, decoded) =>{
         if (err) {
-            console.log(req.headers.host);
             if(process.env.AMBIENTE == 'production'){
                 return res.redirect(301, 'https://' + req.headers.host + '/');
             } else {
@@ -36,11 +34,10 @@ router.get('/images', async (req,res) => {
 });
 router.get('/remove-image', (req,res) => {
     let { fileName, token } = req.query;
-    let db = app.locals.db;
     imagesModel.deleteImage(fileName).then(result => {
         rename(
-            path.normalize('./public/images/original-images/' + fileName), 
-            path.normalize('./public/images/deleted-images/' + fileName), 
+            normalize('./public/images/original-images/' + fileName), 
+            normalize('./public/images/deleted-images/' + fileName), 
             (err) => {
                 if(err) console.error('Algo deu errado na hora de deletar a imagem', err);
                 console.log('Imagem movida com sucesso');
@@ -76,7 +73,6 @@ router.get('/upload-images', verifyTokenUploadImages, async (req, res) => {
 router.post('/upload-images', upload.single('image'), verifyTokenUploadImages, async (req, res) => {
     let { filename } = req.file;
     let { category, existentCategory, phrase, token } = req.body;
-    let db = app.locals.db;
     if(existentCategory != ''){
         category = existentCategory;
     }
@@ -92,8 +88,8 @@ router.post('/upload-images', upload.single('image'), verifyTokenUploadImages, a
             });
         }
 
-        let qtdImages = await db.collection('Images').countDocuments();
-        await db.collection('Images').insertOne({
+        let qtdImages = await imagesModel.countDocuments();
+        await imagesModel.insertImage({
             fileName: filename,
             category: category,
             phrase: phrase,
@@ -103,7 +99,7 @@ router.post('/upload-images', upload.single('image'), verifyTokenUploadImages, a
         let categorias = await categoriesModel.getCategories({category : category});
         if(categorias.length == 0){
             let urlName = util.urlFriendlyer(category);
-            await db.collection('Categories').insertOne({
+            await categoriesModel.insertCategorie({
                 category : category,
                 urlName : urlName
             });

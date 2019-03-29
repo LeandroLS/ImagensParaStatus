@@ -13,5 +13,8 @@ module.exports = {
     async getCategories(param = null){
         let categories = await app.locals.db.collection('Categories').find(param).toArray();
         return categories;
+    },
+    async insertCategorie(param){
+        await app.locals.db.collection('Categories').insertOne(param);
     }
 }
