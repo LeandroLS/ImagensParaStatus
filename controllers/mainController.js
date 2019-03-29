@@ -61,8 +61,8 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     let imagesPerPage = app.locals.imagesPerPage;
     let numberOfPages = await imagesModel.countDocuments(filter).then(qtdImages => calcNumberOfPages(qtdImages));
     let paginationNumbers = paginationHelper.getNumbersOfPagination(1,numberOfPages);
-    let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray().then(images => images);
-    let categories = await db.collection('Categories').find().sort({'name': -1}).toArray().then(categories => categories);
+    let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray();
+    let categories = await db.collection('Categories').find().sort({'name': -1}).toArray();
     let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     Promise.all([images, categories]).then(data => {
         return res.render('index', {
@@ -121,7 +121,7 @@ app.get('/:category?/page/:number', async (req, res) => {
         }
         var images = await imagesArray.filter(filterImagesPerLastId);
     }
-    let numberOfPages = await db.collection('Images').countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
+    let numberOfPages = await imagesModel.countDocuments(filterNumberOfPages).then(qtdImages => calcNumberOfPages(qtdImages));
     let categories = await categoriesModel.getCategories();
     let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     let paginationNumbers = paginationHelper.getNumbersOfPagination(pageNumber,numberOfPages);
