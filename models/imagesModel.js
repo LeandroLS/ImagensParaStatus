@@ -16,8 +16,8 @@ module.exports = {
     async insertImage(param){
         await app.locals.db.collection('Images').insertOne(param);
     },
-    async countDocuments(){
-        let result = await app.locals.db.collection('Images').countDocuments();
+    async countDocuments(param = null){
+        let result = await app.locals.db.collection('Images').countDocuments(param);
         return result;
     }
 }
