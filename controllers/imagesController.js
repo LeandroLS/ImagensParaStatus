@@ -9,6 +9,7 @@ const upload = require('../config/upload');
 const util = require('../libs/util');
 const imagesModel = require('../models/imagesModel');
 const categoriesModel = require('../models/categoriesModel');
+const phrasesModel = require('../models/phrasesModel');
 async function verifyTokenUploadImages(req, res, next){
     let token = req.body.token || req.query.token;
     jwt.verify(token, auth.secret, (err, decoded) =>{
@@ -45,7 +46,7 @@ router.get('/remove-image', (req,res) => {
                 console.log('Imagem movida com sucesso');
             });
     }).then(() => {
-        db.collection('Phrases').deleteOne({ fileName : fileName }).then(result => {
+        phrasesModel.deletePhrase({ fileName : fileName }).then(result => {
             let message = {
                 success: true,
                 message: 'Imagem removida com sucesso.' 
@@ -80,18 +81,16 @@ router.post('/upload-images', upload.single('image'), verifyTokenUploadImages, a
         category = existentCategory;
     }
     try {
-        let phrases = await db.collection('Phrases').find({ phrase : phrase }).toArray();
+        let phrases = await phrasesModel.getPhrases({ phrase : phrase });
         if(phrases.length >= 1){
             throw new Error("Frase já existe.");
         } else if(phrases.length == 0) {
-            db.collection('Phrases').insertOne({
+            await phrasesModel.insertPhrase({
                 phrase: phrase,
                 category: category,
                 fileName: filename
             });
         }
-
-
 
         let qtdImages = await db.collection('Images').countDocuments();
         await db.collection('Images').insertOne({
