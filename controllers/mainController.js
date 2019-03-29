@@ -64,19 +64,17 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     let images = await db.collection('Images').find(filter).limit(imagesPerPage).sort({'_id' : -1}).toArray();
     let categories = await db.collection('Categories').find().sort({'name': -1}).toArray();
     let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
-    Promise.all([images, categories]).then(data => {
-        return res.render('index', {
-            images : data[0],
-            categories : data[1],
-            categoryPagination : (category ? category[0].category : null ),
-            categoryDescription : (category ? category[0].description : null ),
-            phrase : phrase,
-            header : header,
-            metaDescription : metaDescription,
-            title : title,
-            canonical : canonical,
-            paginationNumbers : paginationNumbers
-        });
+    return res.render('index', {
+        images : images,
+        categories : categories,
+        categoryPagination : (category ? category[0].category : null ),
+        categoryDescription : (category ? category[0].description : null ),
+        phrase : phrase,
+        header : header,
+        metaDescription : metaDescription,
+        title : title,
+        canonical : canonical,
+        paginationNumbers : paginationNumbers
     });
 });
 
