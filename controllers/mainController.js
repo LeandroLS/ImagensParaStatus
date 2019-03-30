@@ -67,7 +67,7 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
     return res.render('index', {
         images : images,
         categories : categories,
-        categoryPagination : (category ? category[0].category : null ),
+        categoryPagination : (category ? category[0].urlName : null ),
         categoryDescription : (category ? category[0].description : null ),
         phrase : phrase,
         header : header,
@@ -83,18 +83,17 @@ app.get('/:category?/page/:number', async (req, res) => {
     let { phrase } = req.query;
     var filter = {};
     var filterNumberOfPages = {};
-    var header = SEOHelper.getImagesCategoryHeader(category);
-    let metaDescription = SEOHelper.getMetaDescription(category);
     if(req.params.category){
-        var category = req.params.category;
-        filterNumberOfPages.category = category;
-        filter.category = category;
+        var category = await categoriesModel.getCategories({ urlName : req.params.category});
+        filterNumberOfPages.category = category[0].category;
+        filter.category = category[0].category;
     }
+    let header = SEOHelper.getImagesCategoryHeader((category ? category[0].category : ''));
+    let metaDescription = SEOHelper.getMetaDescription((category ? category[0].category : ''));
     if(phrase){
         filterNumberOfPages.phrase = { $regex: `.*${phrase}.*`, $options:'i' };
         filter.phrase = { $regex: `.*${phrase}.*`, $options:'i' };
     }
-
     if(req.params.number){
         var pageNumber = req.params.number;
         var imagesArray = new Array();
@@ -123,11 +122,11 @@ app.get('/:category?/page/:number', async (req, res) => {
     let categories = await categoriesModel.getCategories();
     let canonical = SEOHelper.geraCanonicalLink(req.originalUrl);
     let paginationNumbers = paginationHelper.getNumbersOfPagination(pageNumber,numberOfPages);
-    let title = SEOHelper.getTitleDescription((category ? category : null ));
+    let title = SEOHelper.getTitleDescription((category ? category[0].category : null ));
     return res.render('index', {
         images : images,
         categories : categories,
-        categoryPagination : category,
+        categoryPagination : (category ? category[0].urlName : ''),
         header : header,
         phrase : phrase,
         canonical : canonical,
