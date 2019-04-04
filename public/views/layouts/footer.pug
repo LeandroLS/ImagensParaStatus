@@ -14,15 +14,14 @@ footer(class="footer margin-top-1pct gradient")
                             a(href="https://br.pinterest.com/imagensparastatus/" target="_blank" class="btn") <i class="fab fa-pinterest fa-3x"></i>
                         li.list-inline-item.hover-facebook
                             a(href="https://www.facebook.com/sigaimagensparastatus/" target="_blank" class="btn") <i class="fab fa-facebook fa-3x"></i>
-            
+    <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.5.1/intersection-observer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@11.0.5/dist/lazyload.min.js"></script>     
     script(src="/js/popper.min.js")
     include default-js.pug
-    include facebookSDK.pug
     include pinitjs.pug
     script(src="/js/clipboard.min.js")
-    <script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.5.1/intersection-observer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@11.0.5/dist/lazyload.min.js"></script>
     noscript#deferred-styles
+        include facebookSDK.pug
         link(rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.2/css/fontawesome.css' integrity='sha384-4aon80D8rXCGx9ayDt85LbyUHeMWd3UiBaWliBlJ53yzm9hqN21A+o1pqoyK04h+' crossorigin='anonymous')
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/solid.css" integrity="sha384-r/k8YTFqmlOaqRkZuSiE9trsrDXkh07mRaoGBMoDcmA58OHILZPsk29i2BsFng1B" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/brands.css" integrity="sha384-BKw0P+CQz9xmby+uplDwp82Py8x1xtYPK3ORn/ZSoe6Dk3ETP59WCDnX+fI1XCKK" crossorigin="anonymous">
