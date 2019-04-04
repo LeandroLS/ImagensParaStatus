@@ -59,7 +59,7 @@
                                     li.page-item
                                         a.page-link(href=`${categoryPagination}/page/${val}${phrase}`)= val
                                 if paginationNumbers.pages.length > 1 && paginationNumbers.nextPage
-                                    li.page-item: a.page-link(href=`/${categoryPagination}/page/${paginationNumbers.nextPage}${phrase}` rel='next'): <i class="fas fa-forward"></i>
+                                    li.page-item: a.page-link(href=`${categoryPagination}/page/${paginationNumbers.nextPage}${phrase}` rel='next'): <i class="fas fa-forward"></i>
         .col-md-3
             include layouts/categories.pug
         <a href="javascript:" class="btn btn bg-azul-2 hover-white" id="backToTop" onclick="returnToTop()" title="Voltar para o topo">
