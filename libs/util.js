@@ -13,7 +13,6 @@ module.exports = {
      * Troca espaços por traços e deixa tudo em lower case.
      */
     urlFriendlyer(string){
-        string = string.replace(/ /g, '-').toLowerCase();
-        return string;
+        return string.normalize('NFD').replace(/ /g, '-').replace("?", '').replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 }
