@@ -2,7 +2,7 @@ const app = require('../config/express');
 module.exports = {
     async getRelatedImages(image){
         let relatedImages = await app.locals.db.collection('Images')
-        .find({ '_id' : { $ne: image._id }, category : image.category })
+        .find({ '_id' : { $ne: image._id, $gte: image._id }, category : image.category })
         .limit(6).toArray();
         return relatedImages;
     },
