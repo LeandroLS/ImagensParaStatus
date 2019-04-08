@@ -4,6 +4,11 @@ module.exports = {
         let relatedImages = await app.locals.db.collection('Images')
         .find({ '_id' : { $ne: image._id, $gte: image._id }, category : image.category })
         .limit(6).toArray();
+        if(relatedImages.length < 6){
+            relatedImages = await app.locals.db.collection('Images')
+            .find({ '_id' : { $ne: image._id, }, category : image.category })
+            .limit(6).sort({$natural:-1}).toArray();
+        }
         return relatedImages;
     },
     async deleteImage(fileName){
