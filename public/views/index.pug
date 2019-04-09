@@ -25,8 +25,7 @@
         .col-md-9
             .text-center(class="margin-bottom-1pct"): h1.azul-2= header
             if(images.length >= 1)
-                if(categoryPagination)
-                    p #{categoryDescription}
+                p #{categoryDescription}
                 each image in images
                     div.card(class="margin-bottom-1pct shadow"): div.card-body
                         p.blockquote

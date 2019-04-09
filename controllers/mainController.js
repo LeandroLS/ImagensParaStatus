@@ -68,7 +68,7 @@ app.get('/:categoryUrlName?', checkIfCategoryExists, async (req, res) => {
         images : images,
         categories : categories,
         categoryPagination : (category ? category[0].urlName : null ),
-        categoryDescription : (category ? category[0].description : null ),
+        categoryDescription : (category ? category[0].description : 'Diversas imagens para status com frases lindas para você compartilhar! :D' ),
         phrase : phrase,
         header : header,
         metaDescription : metaDescription,
@@ -88,6 +88,7 @@ app.get('/:category?/page/:number', async (req, res) => {
         filterNumberOfPages.category = category[0].category;
         filter.category = category[0].category;
     }
+    var categoryDescription = (category ? category[0].description : 'Diversas imagens para status com frases lindas para você compartilhar! :D' );
     let header = SEOHelper.getImagesCategoryHeader((category ? category[0].category : ''));
     let metaDescription = SEOHelper.getMetaDescription((category ? category[0].category : ''));
     if(phrase){
@@ -131,6 +132,7 @@ app.get('/:category?/page/:number', async (req, res) => {
         phrase : phrase,
         canonical : canonical,
         metaDescription : metaDescription,
+        categoryDescription : categoryDescription,
         title : title,
         paginationNumbers : paginationNumbers
     });
