@@ -1,7 +1,7 @@
 const app = require('../config/express');
 const MongoClient = require('mongodb').MongoClient;
 if(process.env.AMBIENTE == 'production'){
-    var url = 'mongodb+srv://llimas:04159632@imagensparastatus-6qfkr.gcp.mongodb.net/test?retryWrites=true";';
+    var url = 'sua conexão com o mongo db de produção';
 } else {
     var url = 'mongodb://localhost:27017';
 }
