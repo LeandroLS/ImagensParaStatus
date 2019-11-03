@@ -1,0 +1,35 @@
+version : '3'
+services:
+  imagensparastatus:
+    depends_on:
+      - mongodb
+    image: node
+    volumes:
+    - .:/app
+    working_dir: /app
+    ports:
+    - 3000:3000
+    command: ["npm", "install"]
+    command: ["npm", "run", "dev"]
+    networks:
+    - my_net
+  mongodb:
+    image: mongo
+    ports:
+    - 27017:27017
+    networks:
+    - my_net
+  mongo_seed:
+    image: mongo
+    links:
+    - mongodb
+    volumes:
+    - ./database/seed:/database
+    working_dir: /database
+    command:
+      /database/import.sh
+    networks:
+    - my_net
+networks:
+  my_net:
+

@@ -3,7 +3,7 @@ const MongoClient = require('mongodb').MongoClient;
 if(process.env.AMBIENTE == 'production'){
     var url = 'sua conexão com o mongo db de produção';
 } else {
-    var url = 'mongodb://localhost:27017';
+    var url = 'mongodb://mongodb:27017';
 }
 const dbName = 'ImagensParaStatus';
 const mongoClient = new MongoClient(url, { useNewUrlParser: true });
